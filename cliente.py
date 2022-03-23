@@ -1,4 +1,4 @@
-import socket, pickle, struct,os, colorama
+import socket, pickle, os, colorama
 
 class Cliente():
     
@@ -33,27 +33,16 @@ class Cliente():
        
     def recvall (self):
         msg = self.sock.recv(17520)
-        msgg = pickle.loads(msg)
-        print(colorama.Back.BLUE+colorama.Fore.RED+ msgg['mensaje']+colorama.Style.RESET_ALL)
-        if(msgg['archivo'] != "no"):
-            f = open(msgg['nombreArchivo'],'wb')
-            f.write(msgg['archivo'])
+        if(msg != None ):
+            f = open(msg['key'],'wb')
+            f.write(msg['archivo'])
             f.close()
-
-    def recvallfile(self):
-        
-        msg = self.sock.recv(17520)
-        msgg = pickle.loads(msg)
-        print(colorama.Back.BLUE+colorama.Fore.RED+ msgg['mensaje']+colorama.Style.RESET_ALL)
-        if(msgg['mensaje'] != (f"No existe el bucket {self.dicc['bucket']}")):
-            for fichero in msgg['lista']:
-                print(fichero)    
-
+           
     def cerrar_conexion(self):
         self.sock.close()
                 
    
 if __name__ == "__main__":
-    c = Cliente(hostname = 'localhost', port = 5050)
+    c = Cliente(hostname = 'localhost', port = 5050, path = r'C:\Users\arodr\OneDrive\Escritorio\Hola.jpg')
     c.iniciar_conexion()
     c.cerrar_conexion()
