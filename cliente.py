@@ -16,15 +16,50 @@ class Cliente():
             print(e)
     
     def leer_archivo(self, path):
+
         file = open(path, 'rb')
-        self.dicc['value'] = file.read()
-        file.read()
-        key = format(id(os.path.split(path)[1]))
-        self.dicc['key'] = key
+        archivo = file.read()
         file.close()
+
+        return archivo
     
-    def enviar_archivo(self):
-        # Enviar datos al servidor sendall usa UDP
+    def crear(self, llave, path):
+
+        valor = self.leer_archivo(path)
+
+        self.dicc['operacion'] = 1
+        self.dicc['llave'] = llave
+        self.dicc['valor'] = valor
+    
+        self.enviar()
+
+
+    def leer(self, llave):
+
+        self.dicc['operacion'] = 2
+        self.dicc['llave'] = llave
+
+        self.enviar()
+
+    def actualizar(self, llave, path):
+        
+        valor = self.leer_archivo(path)
+
+        self.dicc['operacion'] = 3
+        self.dicc['llave'] = llave
+        self.dicc['valor'] = valor
+
+        self.enviar()
+
+    def eliminar(self, llave):
+
+        self.dicc['operacion'] = 4
+        self.dicc['llave'] = llave
+
+        self.enviar()
+
+    def enviar(self):
+       # Enviar datos al servidor sendall usa UDP
         x = self.dicc
         length = len(x) 
         self.sock.sendall(length)
@@ -34,8 +69,8 @@ class Cliente():
     def recvall (self):
         msg = self.sock.recv(17520)
         if(msg != None ):
-            f = open(msg['key'],'wb')
-            f.write(msg['archivo'])
+            f = open(msg['llave'],'wb')
+            f.write(msg['valor'])
             f.close()
            
     def cerrar_conexion(self):
@@ -43,6 +78,6 @@ class Cliente():
                 
    
 if __name__ == "__main__":
-    c = Cliente(hostname = 'localhost', port = 5050, path = r'C:\Users\arodr\OneDrive\Escritorio\Hola.jpg')
+    c = Cliente(hostname = 'localhost', port = 5050)
     c.iniciar_conexion()
     c.cerrar_conexion()

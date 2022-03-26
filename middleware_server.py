@@ -31,7 +31,7 @@ class Server():
 
     
     def recibir_datos(self):
-        datos = ''
+        
         while self.connected:
             try:
                 # Recibir datos del cliente.
@@ -39,6 +39,7 @@ class Server():
                 print("Si recibo datos")
                 datos = self.recvall(self.conn, length)              
                 # self.conn.sendall(b'Se han recibido los datos')    
+                print(datos)
             except Exception:
                 self.connected = False
             
@@ -51,7 +52,7 @@ class Server():
             count -= len (newbuf) 
         return buf
 
-    def enviar_descargable(self,datos):
+    def enviar(self,datos):
         pass
     
 
