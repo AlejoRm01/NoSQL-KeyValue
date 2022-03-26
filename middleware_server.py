@@ -14,8 +14,6 @@ class Server():
             print('Escuchando')
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.bind((self.hostname, self.port))
-            if(os.path.isdir('Buckets') == False):
-                os.mkdir('Buckets')
             self.sock.listen(1)
         except Exception as e:
             print(e)
@@ -54,16 +52,7 @@ class Server():
         return buf
 
     def enviar_descargable(self,datos):
-        if(os.path.isfile('Buckets/' + datos['bucket'] +'/'+ datos['nombreArchivo']) == False):
-            print('Buckets/' + datos['bucket'] + datos['nombreArchivo'])
-            self.dicc['mensaje'] =f"El archivo {datos['nombreArchivo']} no existe"
-        else:
-            file = open('Buckets/' + datos['bucket'] +'/'+ datos['nombreArchivo'],'rb')
-            self.dicc['mensaje'] = f"Descarga realiza del archivo {datos['nombreArchivo']}"
-            self.dicc['archivo'] = file.read()
-            self.dicc['nombreArchivo'] = os.path.split('Buckets/' + datos['bucket'] + datos['nombreArchivo'])[1]
-            file.close
-        self.enviar_archivo()
+        pass
     
 
     def enviar_archivo(self):

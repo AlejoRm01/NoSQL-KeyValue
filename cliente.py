@@ -26,7 +26,7 @@ class Cliente():
     def enviar_archivo(self):
         # Enviar datos al servidor sendall usa UDP
         x = self.dicc
-        length = len(x)
+        length = len(x) 
         self.sock.sendall(length)
         self.sock.sendall(x)
 
