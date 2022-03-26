@@ -1,11 +1,11 @@
-import pickle, socket, multiprocessing, struct, os,shutil
+import socket, multiprocessing, struct, pickle, os
 
 class Server():
 
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
-        self.dicc = {}
+        self.arr = []
         self.connected = True
         
     def iniciar_conexion(self):
@@ -21,7 +21,7 @@ class Server():
     def aceptar_conexion(self):
         # Aceptar solicitudes 
         while True:
-            self.conn, self.addr = self.sock.accept()
+            self.connection, self.addr = self.sock.accept()
             print('conectado con %r', self.addr)
             # Manejo de procesos mediante el uso de un while y el manejo de un metodo
             proceso = multiprocessing.Process(target= self.recibir_datos, args=())
@@ -29,20 +29,55 @@ class Server():
             proceso.start()
             print('Nuevo proceso inciado %r', proceso)
 
+
+    def crear(self, x):
+        print('Estoy en crear')
+
+    def leer(self):
+        pass
+
+    def actualizar(self):
+        pass
+
+    def eliminar(self):
+        pass
+
     
     def recibir_datos(self):
-        
-        while self.connected:
-            try:
+        datos = ''
+        try:
+            while self.connected:
                 # Recibir datos del cliente.
-                length = self.recvall(self.conn, 4)
-                print("Si recibo datos")
-                datos = self.recvall(self.conn, length)              
-                # self.conn.sendall(b'Se han recibido los datos')    
-                print(datos)
-            except Exception:
-                self.connected = False
-            
+                lengthbuf = self.recvall(self.connection, 4)
+                length, = struct.unpack('!I', lengthbuf)
+                datos = self.recvall(self.connection, length)                  
+                if datos: 
+                    print("Envio efectivo")
+                    #self.connection.sendall(b'Se han recibido los datos')
+                    self.organizar_datos(datos)
+                else:
+                    break
+                break
+
+        except Exception:
+            self.connected = False
+
+
+    def organizar_datos(self, x):
+        datos = pickle.loads(x)
+        datos = datos.split('/')
+        print(datos)
+        if(datos[0] == '1'):
+            self.crear(datos)
+        elif(datos[0] == '2'):
+            self.leer()
+        elif(datos[0] == '3'):
+            self.actualizar()
+        elif(datos[0] == '4'):
+            self.eliminar()
+        else:
+            print('Operacion incorrecta')
+        
     def recvall (self, sock, count): 
         buf = b'' 
         while count: 
@@ -52,13 +87,8 @@ class Server():
             count -= len (newbuf) 
         return buf
 
-    def enviar(self,datos):
-        pass
-    
-
     def enviar_archivo(self):
-        message = pickle.dumps(self.dicc)
-        self.conn.sendall(message)
+        self.conn.sendall(bytearray(self.arr))
         
     def cerrar_con(self):
         # Cerrar conexión

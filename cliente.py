@@ -1,11 +1,11 @@
-import socket, pickle, os, colorama
+import socket, pickle, struct, os
 
 class Cliente():
     
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port 
-        self.dicc = {}
+        self.msg = ''
      
     def iniciar_conexion(self):
         # Iniciar servicio
@@ -27,44 +27,42 @@ class Cliente():
 
         valor = self.leer_archivo(path)
 
-        self.dicc['operacion'] = 1
-        self.dicc['llave'] = llave
-        self.dicc['valor'] = valor
+        self.msg += str(1)
+        self.msg += '/' + str(llave)
+        self.msg += '/' + str(valor)
     
         self.enviar()
 
 
     def leer(self, llave):
 
-        self.dicc['operacion'] = 2
-        self.dicc['llave'] = llave
+        self.arr.append(2)
+        self.arr.append(llave)
 
         self.enviar()
 
     def actualizar(self, llave, path):
-        
+
         valor = self.leer_archivo(path)
 
-        self.dicc['operacion'] = 3
-        self.dicc['llave'] = llave
-        self.dicc['valor'] = valor
+        self.arr.append(3)
+        self.arr.append(llave)
+        self.arr.append(valor)
 
         self.enviar()
 
     def eliminar(self, llave):
 
-        self.dicc['operacion'] = 4
-        self.dicc['llave'] = llave
+        self.arr.append(4)
+        self.arr.append(llave)
 
         self.enviar()
 
-    def enviar(self):
-       # Enviar datos al servidor sendall usa UDP
-        x = self.dicc
-        length = len(x) 
-        self.sock.sendall(length)
+    def enviar(self):   
+        x = pickle.dumps(self.msg)
+        length = len(x)
+        self.sock.sendall(struct.pack('!I', length))
         self.sock.sendall(x)
-
        
     def recvall (self):
         msg = self.sock.recv(17520)
@@ -80,4 +78,6 @@ class Cliente():
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5050)
     c.iniciar_conexion()
+    c.crear('Hola', r'Telematica.png')
+    c.enviar()
     c.cerrar_conexion()
