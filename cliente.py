@@ -16,7 +16,7 @@ class Cliente():
             print(e)
     
     def leer_archivo(self, path):
-
+        # Abrir archivo, leerlo y retornarlo
         file = open(path, 'rb')
         archivo = file.read()
         file.close()
@@ -24,7 +24,7 @@ class Cliente():
         return archivo
     
     def crear(self, llave, path):
-
+        #Crear un registro nuevo en la bases de datos
         valor = self.leer_archivo(path)
 
         self.msg += str(1)
@@ -35,41 +35,39 @@ class Cliente():
 
 
     def leer(self, llave):
-
+        #Leer registro o registros de la base de datos
         self.arr.append(2)
         self.arr.append(llave)
 
         self.enviar()
 
     def actualizar(self, llave, path):
-
+        #Actualizar registro de la base de datos
         valor = self.leer_archivo(path)
 
-        self.arr.append(3)
-        self.arr.append(llave)
-        self.arr.append(valor)
+        self.msg += str(3)
+        self.msg += '/' + str(llave)
+        self.msg += '/' + str(valor)
 
         self.enviar()
 
     def eliminar(self, llave):
-
-        self.arr.append(4)
-        self.arr.append(llave)
+        #Eliminar registro de la base de datos
+        self.msg += str(4)
+        self.msg += '/' + str(llave)
 
         self.enviar()
 
     def enviar(self):   
+        #Almacenar str en un contenedor dumps y enviar este al servidor
         x = pickle.dumps(self.msg)
         length = len(x)
         self.sock.sendall(struct.pack('!I', length))
         self.sock.sendall(x)
        
     def recvall (self):
+        #Recibir respueta del servidor si es necesario
         msg = self.sock.recv(17520)
-        if(msg != None ):
-            f = open(msg['llave'],'wb')
-            f.write(msg['valor'])
-            f.close()
            
     def cerrar_conexion(self):
         self.sock.close()
