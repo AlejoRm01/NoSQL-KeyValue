@@ -1,4 +1,5 @@
-import socket, multiprocessing, struct, pickle, os
+import socket, multiprocessing, struct, pickle
+from llaves_servidores import *
 
 class Server():
 
@@ -66,7 +67,7 @@ class Server():
     def organizar_datos(self, x):
         datos = pickle.loads(x)
         datos = datos.split('/')
-        print(datos)
+        
         if(datos[0] == '1'):
             self.crear(datos)
         elif(datos[0] == '2'):
