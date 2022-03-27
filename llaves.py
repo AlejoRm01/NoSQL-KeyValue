@@ -1,4 +1,5 @@
 import csv, os
+import enum
 
 
 class llaves():
@@ -36,18 +37,24 @@ class llaves():
         return aux
 
     def crear_llave(self, llave):
-        
-        if llave not in self.llaves:
+        aux = 0
+        for idx, v in enumerate(self.llaves):
+            if llave['llave'] == v['llave']: 
+                aux += 1
+
+        if aux == 0: 
             self.llaves.append(llave)
-            return 'Se creo correctamente la llave: {}'.format(llave)
+            return 'Se creo correctamente la llave: {} en el servidor {}'.format(llave['llave'], llave['servidor'])
         else: 
-            return 'Ya existe en la lista la llave: {}'.format(llave)
+            self.eliminar_llave(llave)
+            return 'Ya existe en la lista la llave: {}'.format(llave['llave'])    
+
 
     def eliminar_llave(self, llave):
         if llave not in self.llaves:
             return 'No exite la llave: {}'.format(llave)
         else: 
-            aux = self.llaves.index(llave)
+            
             self.llaves.pop(aux)
             return 'Se elimino correctamente: {}'.format(llave)
 
@@ -55,18 +62,18 @@ if __name__=='__main__':
 
     llave1 = {
             'llave': 1,
-            'servidor': 20
-        }
-    llave2= {
-            'llave': 2,
             'servidor': 4
         }
-    llave3 ={
-            'llave': 3,
-            'servidor': 6
+    llave2 = {
+            'llave': 2,
+            'servidor': 2
         }
-    llave4 ={
+    llave3 = {
             'llave': 3,
+            'servidor': 4
+        }
+    llave4 = {
+            'llave': 2,
             'servidor': 5
         }
         
@@ -74,14 +81,15 @@ if __name__=='__main__':
     
     tabla.inicializar_tabla()
     
-    tabla.crear_llave(llave1)
-    tabla.crear_llave(llave2)
-    tabla.crear_llave(llave3)
-    tabla.crear_llave(llave4)
+    print(tabla.crear_llave(llave1))
+    print(tabla.crear_llave(llave2))
+    print(tabla.crear_llave(llave3))
+    print(tabla.crear_llave(llave4))
    
+    tabla.guardar_llaves()
     tabla.ver_lista_llaves()
 
-    tabla.guardar_llaves()
+    
 
     
     
