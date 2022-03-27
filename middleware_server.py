@@ -1,5 +1,5 @@
 import socket, multiprocessing, struct, pickle
-from llaves_servidores import *
+from llaves import *
 
 class Server():
 
