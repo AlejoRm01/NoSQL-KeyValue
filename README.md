@@ -1,4 +1,4 @@
-#Base de datos NoSQL basada en Key-Value
+# Base de datos NoSQL basada en Key-Value
 
 Realizado por Alejandro Rodriguez Muñoz
 
