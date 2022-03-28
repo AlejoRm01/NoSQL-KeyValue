@@ -1,8 +1,12 @@
+import random
 import socket, multiprocessing, struct, pickle
 from llaves import *
 
 class Server():
-
+    
+    global nServidores
+    nServidores = 0
+    
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
@@ -31,18 +35,40 @@ class Server():
             print('Nuevo proceso inciado %r', proceso)
 
 
-    def crear(self, x):
-        print('Estoy en crear')
+    def crear(self):
+        
+        servidor = random.randrange(nServidores)
+        aux = [self.datos[1],servidor] 
+    
+        llave = llaves()
+        llave.inicializar_tabla()
+        respuesta = llave.crear_llave(aux)
+        llave.guardar_llaves()
+        
+        return respuesta
 
     def leer(self):
-        pass
-
+        llave = llaves()
+        llave.inicializar_tabla()
+        respuesta = llave.ver_llave(self.datos[1])
+        llave = None
+        
     def actualizar(self):
-        pass
-
+        llave = llaves()
+        llave.inicializar_tabla()
+        respuesta = llave.ver_llave(self.datos[1])
+        llave = None
+        
     def eliminar(self):
-        pass
-
+        
+        llave = llaves()
+        llave.inicializar_tabla()
+        respuesta = llave.ver_llave(self.datos[1])
+        respuesta = llave.eliminar_llave(respuesta)
+        llave.guardar_llaves()
+        llave = None
+        
+        return respuesta 
     
     def recibir_datos(self):
         datos = ''

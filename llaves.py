@@ -4,13 +4,13 @@ import enum
 
 class llaves():
     
-
     def __init__(self):
         self.TABLA_LLAVES = 'llaves.csv'
         self.ESQUEMA_LLAVES = ['llave', 'servidor']
         self.llaves = [] 
 
     def inicializar_tabla(self):
+        
         with open(self.TABLA_LLAVES, 'a+') as f:
             lector = csv.DictReader(f, fieldnames=self.ESQUEMA_LLAVES)
 
@@ -28,6 +28,7 @@ class llaves():
             
 
     def ver_lista_llaves(self):
+        
         aux = ''
         for idx, llave in enumerate(self.llaves):
             aux += ('{llave} | {servidor}\n').format(
@@ -37,9 +38,10 @@ class llaves():
         return aux
 
     def crear_llave(self, llave):
+        
         aux = 0
-        for idx, v in enumerate(self.llaves):
-            if llave['llave'] == v['llave']: 
+        for idx, k in enumerate(self.llaves):
+            if llave['llave'] == k['llave']: 
                 aux += 1
 
         if aux == 0: 
@@ -51,12 +53,24 @@ class llaves():
 
 
     def eliminar_llave(self, llave):
+        
         if llave not in self.llaves:
             return 'No exite la llave: {}'.format(llave)
         else: 
             
-            self.llaves.pop(aux)
+            self.llaves.pop(llave)
             return 'Se elimino correctamente: {}'.format(llave)
+    
+    def ver_llave(self, llave):
+        
+        aux = 0
+        for idx, k in enumerate(self.llaves):
+            if llave == k['llave']: 
+                aux = k
+    
+        return aux
+    
+    
 
 if __name__=='__main__':
 
@@ -85,7 +99,6 @@ if __name__=='__main__':
     print(tabla.crear_llave(llave2))
     print(tabla.crear_llave(llave3))
     print(tabla.crear_llave(llave4))
-   
     tabla.guardar_llaves()
     tabla.ver_lista_llaves()
 
