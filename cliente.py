@@ -36,13 +36,13 @@ class Cliente():
 
     def leer(self, llave):
         #Leer registro o registros de la base de datos
-        self.arr.append(2)
-        self.arr.append(llave)
+        self.msg += str(2)
+        self.msg += '/' + str(llave)
 
         self.enviar()
 
     def actualizar(self, llave, path):
-        #Actualizar registro de la base de datos
+        #Actualizar registro de la base dec datos
         valor = self.leer_archivo(path)
 
         self.msg += str(3)
@@ -70,6 +70,7 @@ class Cliente():
         msg = self.sock.recv(17520)
            
     def cerrar_conexion(self):
+        #Cerrar conexion 
         self.sock.close()
                 
    

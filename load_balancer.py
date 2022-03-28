@@ -36,7 +36,7 @@ class Load_Balancer():
 
 
     def crear(self):
-        
+        #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         servidor = random.randrange(nServidores)
         aux = [self.datos[1],servidor] 
     
@@ -48,19 +48,24 @@ class Load_Balancer():
         return respuesta
 
     def leer(self):
+        #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
+        #para entregar la llave y el valor al cliente
         llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
         llave = None
         
     def actualizar(self):
+        #Iniciar proceso de actulizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
+        #para actualizar el valor en el servidor
         llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
         llave = None
         
     def eliminar(self):
-        
+        #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
+        #para eliminar la llave y el valor en el servidor
         llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
@@ -71,6 +76,8 @@ class Load_Balancer():
         return respuesta 
     
     def recibir_datos(self):
+        #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
+        #organizar datos para procesar y deseempaquetar la informacion
         datos = ''
         try:
             while self.connected:
@@ -91,6 +98,7 @@ class Load_Balancer():
 
 
     def organizar_datos(self, x):
+        #Se deseempaqueta el dato y se organiza la informacion
         datos = pickle.loads(x)
         datos = datos.split('/')
         
@@ -106,6 +114,7 @@ class Load_Balancer():
             print('Operacion incorrecta')
         
     def recvall (self, sock, count): 
+        #Metodo auxiliar para recibir la informacion
         buf = b'' 
         while count: 
             newbuf = sock.recv (count) 
@@ -115,6 +124,7 @@ class Load_Balancer():
         return buf
 
     def enviar_archivo(self):
+        #Se envia respuesta al cliente
         self.conn.sendall(bytearray(self.arr))
         
     def cerrar_con(self):
