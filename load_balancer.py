@@ -40,7 +40,7 @@ class Load_Balancer():
         servidor = random.randrange(nServidores)
         aux = [self.datos[1],servidor] 
     
-        llave = llaves()
+        llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.crear_llave(aux)
         llave.guardar_llaves()
@@ -48,20 +48,20 @@ class Load_Balancer():
         return respuesta
 
     def leer(self):
-        llave = llaves()
+        llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
         llave = None
         
     def actualizar(self):
-        llave = llaves()
+        llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
         llave = None
         
     def eliminar(self):
         
-        llave = llaves()
+        llave = Tabla_llaves()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(self.datos[1])
         respuesta = llave.eliminar_llave(respuesta)
@@ -123,7 +123,7 @@ class Load_Balancer():
     
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  
-    s = Server( hostname = 'localhost', port = 5050)
+    s = Load_Balancer( hostname = 'localhost', port = 5050)
     s.iniciar_conexion()
     s.aceptar_conexion()
     for proceso in multiprocessing.active_children():

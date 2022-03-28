@@ -90,7 +90,7 @@ if __name__=='__main__':
             'servidor': 5
         }
         
-    tabla = llaves()
+    tabla = Tabla_llaves()
     
     tabla.inicializar_tabla()
     
