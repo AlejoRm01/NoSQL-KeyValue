@@ -2,7 +2,7 @@ import random
 import socket, multiprocessing, struct, pickle
 from tabla_llaves import *
 
-class Load_Balancer():
+class Balanceador_de_carga():
     
     global nServidores
     nServidores = 0
@@ -132,7 +132,7 @@ class Load_Balancer():
     
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  
-    s = Load_Balancer( hostname = 'localhost', port = 5050)
+    s = Balanceador_de_carga( hostname = 'localhost', port = 5050)
     s.iniciar_conexion()
     s.aceptar_conexion()
     for proceso in multiprocessing.active_children():
