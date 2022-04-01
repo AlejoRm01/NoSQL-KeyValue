@@ -1,5 +1,7 @@
 import multiprocessing
 import socket, struct, pickle
+
+from django.db import connection
 from tabla_valor import *
 
 class nodo():
@@ -38,13 +40,13 @@ class nodo():
         try:
             while self.connected:
                 # Recibir datos del cliente.
-                lengthbuf = self.recvall(self.connection, 4)
-                length, = struct.unpack('!I', lengthbuf)
-                datos = self.recvall(self.connection, length)                  
-                if datos: 
+                msg = self.connection.recv(1024)   
+                msg = pickle.loads(msg)         
+                msg = msg.decode('utf-8') 
+                if msg: 
                     print("Envio efectivo")
                     #self.connection.sendall(b'Se han recibido los datos')
-                    self.organizar_datos(datos)
+                    self.organizar_datos(msg)
                 else:
                     break
                 break
@@ -52,55 +54,31 @@ class nodo():
         except Exception:
             self.connected = False
 
-    def recvall (self, sock, count): 
-        #Metodo auxiliar para recibir la informacion
-        buf = b'' 
-        while count: 
-            newbuf = sock.recv (count) 
-            if not  newbuf: return None 
-            buf += newbuf 
-            count -= len (newbuf) 
-        return buf
-
-    def crear(self, datos):
-        print(datos)
-
-    def leer(self):
-        pass
-    def actualizar(self):
-        pass
-        
-    def eliminar(self):
-        pass
-        
-
-
-    def organizar_datos(self, x):
+    def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
-        datos = pickle.loads(x)
-        datos = datos.split('/')
-        if(datos[0] == '1'):
-            self.crear(datos)
-        elif(datos[0] == '2'):
+        self.msg = pickle.loads(msg)
+        self.msg = self.msg.split('/')
+        if(self.msg[0] == '1'):
+            self.crear()
+        elif(self.msg[0] == '2'):
             self.leer()
-        elif(datos[0] == '3'):
+        elif(self.msg[0] == '3'):
             self.actualizar()
-        elif(datos[0] == '4'):
+        elif(self.msg[0] == '4'):
             self.eliminar()
         else:
             print('Operacion incorrecta')
-        
-    def recvall (self, sock, count): 
-        #Metodo auxiliar para recibir la informacion
-        buf = b'' 
-        while count: 
-            newbuf = sock.recv (count) 
-            if not  newbuf: return None 
-            buf += newbuf 
-            count -= len (newbuf) 
-        return buf
-
-    def enviar_archivo(self):
+            
+    def crear(self):
+        pass
+    
+    def leer(self):
+        pass
+    
+    def actualizar(self):
+        pass
+    
+    def eliminar(self):
         pass
         
     def cerrar_con(self):
@@ -112,4 +90,9 @@ if __name__ == "__main__":
     s = nodo( hostname = 'localhost', port = 5050)
     s.iniciar_conexion()
     s.aceptar_conexion()
-    print('Listo')  
+
+    for proceso in multiprocessing.active_children():
+        print('Terminando proceso %r', proceso)
+        proceso.terminate()
+        proceso.join()
+    print('Listo')

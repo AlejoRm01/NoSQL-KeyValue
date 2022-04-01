@@ -61,8 +61,6 @@ class Cliente():
     def enviar(self):   
         #Almacenar str en un contenedor dumps y enviar este al servidor
         msg = pickle.dumps(self.msg)
-        length = len(msg)
-        self.sock.sendall(struct.pack('!I', length))
         self.sock.sendall(msg)
        
     def recvall (self):
