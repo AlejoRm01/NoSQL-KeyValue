@@ -4,7 +4,7 @@ import csv, os
 class Tabla_llaves():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'llaves.csv'
+        self.TABLA_LLAVES = 'llaves_nodos.csv'
         self.ESQUEMA_LLAVES = ['llave', 'servidor']
         self.llaves = [] 
 
