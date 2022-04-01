@@ -91,10 +91,9 @@ class Balanceador_de_carga():
         return buf
 
     
-    def enviar(self, x):
-        print(x)
-        x = pickle.dumps(self.msg)
-        self.sock.send(x)
+    def enviar(self, msg):
+        msg = pickle.dumps(self.msg)
+        self.sock.send(msg)
 
     def crear(self):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor

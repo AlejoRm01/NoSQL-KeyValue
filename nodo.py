@@ -64,7 +64,6 @@ class nodo():
 
     def crear(self, datos):
         print(datos)
-        print("llego")
 
     def leer(self):
         pass
@@ -78,14 +77,10 @@ class nodo():
 
     def organizar_datos(self, x):
         #Se deseempaqueta el dato y se organiza la informacion
-        print("antes ")
         datos = pickle.loads(x)
         datos = datos.split('/')
-        print(datos)
-        print("antes de if")
         if(datos[0] == '1'):
             self.crear(datos)
-            print("if 1")
         elif(datos[0] == '2'):
             self.leer()
         elif(datos[0] == '3'):
