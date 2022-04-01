@@ -97,9 +97,9 @@ class Load_Balancer():
             self.connected = False
 
 
-    def organizar_datos(self, x):
+    def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
-        datos = pickle.loads(x)
+        datos = pickle.loads(msg)
         datos = datos.split('/')
         
         if(datos[0] == '1'):
@@ -110,8 +110,7 @@ class Load_Balancer():
             self.actualizar()
         elif(datos[0] == '4'):
             self.eliminar()
-        else:
-            print('Operacion incorrecta')
+
         
     def recvall (self, sock, count): 
         #Metodo auxiliar para recibir la informacion
