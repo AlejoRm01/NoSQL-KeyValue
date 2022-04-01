@@ -6,7 +6,7 @@ class Tabla_llaves():
     def __init__(self):
         self.TABLA_LLAVES = 'llaves_nodos.csv'
         self.ESQUEMA_LLAVES = ['llave', 'servidor']
-        self.llaves = [] 
+        self.dicc = [] 
 
     def inicializar_tabla(self):
         
@@ -14,14 +14,14 @@ class Tabla_llaves():
             lector = csv.DictReader(f, fieldnames=self.ESQUEMA_LLAVES)
 
             for row in lector:
-                self.llaves.append(row)
+                self.dicc.append(row)
 
     def guardar_llaves(self):
 
         tmp_tabla_llaves = '{}.tmp'.format(self.TABLA_LLAVES)
         with open(tmp_tabla_llaves, mode='a+') as f:
             escritor = csv.DictWriter(f, fieldnames=self.ESQUEMA_LLAVES)
-            escritor.writerows(self.llaves)
+            escritor.writerows(self.dicc)
             os.remove(self.TABLA_LLAVES)
         os.rename(tmp_tabla_llaves, self.TABLA_LLAVES)
             
@@ -29,7 +29,7 @@ class Tabla_llaves():
     def ver_lista_llaves(self):
         
         aux = ''
-        for idx, llave in enumerate(self.llaves):
+        for idx, llave in enumerate(self.dicc):
             aux += ('{llave} | {servidor}\n').format(
                 llave = llave['llave'],
                 servidor = llave['servidor']
@@ -39,12 +39,12 @@ class Tabla_llaves():
     def crear_llave(self, llave):
         
         aux = 0
-        for idx, k in enumerate(self.llaves):
+        for idx, k in enumerate(self.dicc):
             if llave['llave'] == k['llave']: 
                 aux += 1
 
         if aux == 0: 
-            self.llaves.append(llave)
+            self.dicc.append(llave)
             return 'Se creo correctamente la llave: {} en el servidor {}'.format(llave['llave'], llave['servidor'])
         else: 
             self.eliminar_llave(llave)
@@ -53,17 +53,17 @@ class Tabla_llaves():
 
     def eliminar_llave(self, llave):
         
-        if llave not in self.llaves:
+        if llave not in self.dicc:
             return 'No exite la llave: {}'.format(llave)
         else: 
             
-            self.llaves.pop(llave)
+            self.dicc.pop(llave)
             return 'Se elimino correctamente: {}'.format(llave)
     
     def ver_llave(self, llave):
         
         aux = 0
-        for idx, k in enumerate(self.llaves):
+        for idx, k in enumerate(self.dicc):
             if llave == k['llave']: 
                 aux = k
     

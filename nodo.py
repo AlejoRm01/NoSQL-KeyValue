@@ -40,16 +40,24 @@ class nodo():
                         print("Envio efectivo")
                         #self.connection.sendall(b'Se han recibido los datos')
                         self.organizar_datos(msg)
+                        
+                        # Cerrar conexión
+                        self.sock.close()
+                        
+                        #Borrar objetos o variables
+                        self.sock = None
+                        self.connection = None
+                        self.addre = None
                     else:
                         break
                     break
-                
+                    
             except Exception:
                 self.connected = False
 
     def organizar_datos(self, msg):
-        #Se deseempaqueta el dato y se organiza la informacion
-        self.msg = msg.split('/')
+        #Se organiza la informacion
+        
         
         if(self.msg[0] == '1'):
             self.crear()
@@ -59,8 +67,6 @@ class nodo():
             self.actualizar()
         elif(self.msg[0] == '4'):
             self.eliminar()
-        else:
-            print('Operacion incorrecta')
             
     def crear(self):
         print(self.msg)
@@ -74,12 +80,9 @@ class nodo():
     def eliminar(self):
         pass
         
-    def cerrar_con(self):
-        # Cerrar conexión
-        self.sock.close()
     
 if __name__ == "__main__":
     # Probar conexion entre cliente y socket  
-    s = nodo( hostname = 'localhost', port = 5050)
+    s = nodo( hostname = 'localhost', port = 5000)
     s.iniciar_conexion()
     s.aceptar_conexion()

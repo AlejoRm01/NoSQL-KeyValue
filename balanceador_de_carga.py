@@ -1,11 +1,13 @@
 import random
-import socket, multiprocessing, struct, pickle
+import socket, multiprocessing, pickle
 from tabla_llave import *
 
 class Balanceador_de_carga():
     
     global nServidores
-    nServidores = 0
+    nServidores = 3
+    global port_nodo
+    port_nodo = [5000, 5001, 5002, 5003]
     
     def __init__(self, hostname, port):
         self.hostname = hostname
@@ -28,47 +30,36 @@ class Balanceador_de_carga():
         # Aceptar solicitudes 
         while True:
             self.connection, self.addr = self.sock.accept()
-            print('conectado con %r', self.addr)
-            # Manejo de procesos mediante el uso de un while y el manejo de un metodo
-            proceso = multiprocessing.Process(target= self.recibir_datos, args=())
-            # proceso.daemon = True
-            proceso.start()
-            print('Nuevo proceso inciado %r', proceso)
-            
-    def iniciar_conexion_nodo(self):
-        # Iniciar servicio
-        try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((self.hostname, self.port))
-        except Exception as e:
-            print(e)
-    
-    def recibir_datos(self):
-        #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
-        #organizar datos para procesar y deseempaquetar la informacion
-        datos = ''
-        try:
-            while self.connected:
-                # Recibir datos del cliente.
-                msg = self.connection.recv(1024)   
-                msg = pickle.loads(msg)   
-                msg = msg.decode()       
-                if msg: 
-                    print("Envio efectivo")
-                    #self.connection.sendall(b'Se han recibido los datos')
-                    self.organizar_datos(msg)
-                else:
+            print('conectado con %r', self.addr)    
+            #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
+            #organizar datos para procesar y deseempaquetar la informacion
+            msg = ''
+            try:
+                while self.connected:
+                    # Recibir datos del cliente.
+                    msg = self.connection.recv(1024)   
+                    msg = pickle.loads(msg)         
+                    msg = msg.decode()
+                    print(msg)
+                    if msg: 
+                        print("Envio efectivo")
+                        #self.connection.sendall(b'Se han recibido los datos')
+                        self.organizar_datos(msg)
+                        
+                    else:
+                        break
                     break
-                break
-
-        except Exception:
-            self.connected = False
-
-
+                    
+            except Exception:
+                self.connected = False
+                    
+            except Exception:
+                self.connected = False
+    
     def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
         self.msg = msg.split('/')
-        print(self.msg)
+        print('estoy en organizar')
         if(self.msg[0] == '1'):
             self.crear()
         elif(self.msg[0] == '2'):
@@ -77,6 +68,14 @@ class Balanceador_de_carga():
             self.actualizar()
         elif(self.msg[0] == '4'):
             self.eliminar()
+            
+    def iniciar_conexion_nodo(self, host, port):
+        #Establecer conexion con uno de los nodos
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((host, port))
+        except Exception as e:
+            print(e)
     
     def enviar(self, msg):
         msg = pickle.dumps(msg)
@@ -84,16 +83,14 @@ class Balanceador_de_carga():
 
     def crear(self):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        print(self.msg)
-        servidor = random.randrange(nServidores)
+        print('estoy en crear')
+        servidor = random.randrange(0,nServidores)
         aux = [self.msg[1],servidor] 
-    
         llave = Tabla_llaves()
         llave.inicializar_tabla()
-        respuesta = llave.crear_llave(aux)
+        llave.crear_llave(aux)
         llave.guardar_llaves()
-        
-        return respuesta
+
 
     def leer(self):
         #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -121,23 +118,9 @@ class Balanceador_de_carga():
         llave.guardar_llaves()
         llave = None
         
-        return respuesta 
-        
-    def cerrar_con(self):
-        # Cerrar conexión
-        self.sock.close()
     
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  
     s = Balanceador_de_carga( hostname = 'localhost', port = 5050)
-    s.iniciar_conexion_nodo()
-    s.enviar(b'1/2/odio la vida')
-    #s.iniciar_escucha()
-'''
+    s.iniciar_escucha()
     s.aceptar_conexion()
-    for proceso in multiprocessing.active_children():
-        print('Terminando proceso %r', proceso)
-        proceso.terminate()
-        proceso.join()
-    print('Listo')
-'''     
