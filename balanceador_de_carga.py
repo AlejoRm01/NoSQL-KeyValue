@@ -1,6 +1,6 @@
 import random
 import socket, multiprocessing, struct, pickle
-from tabla_llaves import *
+from tabla_llave import *
 
 class Balanceador_de_carga():
     
