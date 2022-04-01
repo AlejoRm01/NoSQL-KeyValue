@@ -26,38 +26,31 @@ class nodo():
         # Aceptar solicitudes 
         while True:
             self.connection, self.addr = self.sock.accept()
-            print('conectado con %r', self.addr)
-            # Manejo de procesos mediante el uso de un while y el manejo de un metodo
-            proceso = multiprocessing.Process(target= self.recibir_datos, args=())
-            # proceso.daemon = True
-            proceso.start()
-            print('Nuevo proceso inciado %r', proceso)
-    
-    def recibir_datos(self):
-        #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
-        #organizar datos para procesar y deseempaquetar la informacion
-        datos = ''
-        try:
-            while self.connected:
-                # Recibir datos del cliente.
-                msg = self.connection.recv(1024)   
-                msg = pickle.loads(msg)         
-                msg = msg.decode('utf-8') 
-                if msg: 
-                    print("Envio efectivo")
-                    #self.connection.sendall(b'Se han recibido los datos')
-                    self.organizar_datos(msg)
-                else:
+            print('conectado con %r', self.addr)    
+            #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
+            #organizar datos para procesar y deseempaquetar la informacion
+            msg = ''
+            try:
+                while self.connected:
+                    # Recibir datos del cliente.
+                    msg = self.connection.recv(1024)   
+                    msg = pickle.loads(msg)         
+                    msg = msg.decode() 
+                    if msg: 
+                        print("Envio efectivo")
+                        #self.connection.sendall(b'Se han recibido los datos')
+                        self.organizar_datos(msg)
+                    else:
+                        break
                     break
-                break
-            
-        except Exception:
-            self.connected = False
+                
+            except Exception:
+                self.connected = False
 
     def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
-        self.msg = pickle.loads(msg)
-        self.msg = self.msg.split('/')
+        self.msg = msg.split('/')
+        
         if(self.msg[0] == '1'):
             self.crear()
         elif(self.msg[0] == '2'):
@@ -70,7 +63,7 @@ class nodo():
             print('Operacion incorrecta')
             
     def crear(self):
-        pass
+        print(self.msg)
     
     def leer(self):
         pass
@@ -90,9 +83,3 @@ if __name__ == "__main__":
     s = nodo( hostname = 'localhost', port = 5050)
     s.iniciar_conexion()
     s.aceptar_conexion()
-
-    for proceso in multiprocessing.active_children():
-        print('Terminando proceso %r', proceso)
-        proceso.terminate()
-        proceso.join()
-    print('Listo')
