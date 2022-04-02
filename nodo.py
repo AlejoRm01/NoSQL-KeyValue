@@ -69,6 +69,8 @@ class nodo():
             self.actualizar(msg)
         elif(msg['operacion'] == '4'):
             self.eliminar(msg)
+        elif(msg['operacion'] == '5'):
+            self.leer_llaves()
             
     def crear(self, msg):
         aux = {
@@ -80,38 +82,39 @@ class nodo():
         t.inicializar_tabla()
         t.crear_llave(aux)
         t.guardar_llaves()
-        self.sock.close()
+        
     
     def leer(self, msg):
         t = tabla_valor()
         t.inicializar_tabla()
         msg = t.leer_llave(msg['llave'])
-        self.sock.close()
-        
+                
         self.enviar(msg)
         
-    def actualizar(self):
+    def actualizar(self, msg):
         t = tabla_valor()
         t.inicializar_tabla()
-        msg = t.actualizar_llave(msg)
+        t.actualizar_llave(msg)
         t.guardar_llaves()
         
-        self.sock.close()
-        self.enviar(msg)
     
     def eliminar(self, msg):
-        llave = tabla_valor()
-        llave.inicializar_tabla()
-        respuesta = llave.ver_llave(msg['llave'])
-        respuesta = llave.eliminar_llave(respuesta)
-        llave.guardar_llaves()
+        t = tabla_valor()
+        t.inicializar_tabla()
+        t.eliminar_llave(msg)
+        t.guardar_llaves()
         
+        
+    def leer_llaves(self):
+        t = tabla_valor()
+        t.inicializar_tabla()
+        msg = t.leer_lista_llaves()
+        
+        self.enviar(msg)
+
     def enviar(self, msg):
         msg = pickle.dumps(msg)
-        length = len(msg)
-        self.sock.sendto(struct.pack('!I', length),('localhost', self.port_balanceador_de_carga))
-        self.sock.sendto(msg, ('localhost', self.port_balanceador_de_carga))
-        self.sock.close()
+        self.conn.sendall(msg)
         
     
 if __name__ == "__main__":

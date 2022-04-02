@@ -75,13 +75,16 @@ class Balanceador_de_carga():
         elif(msg['operacion'] == '3'):
             self.actualizar(msg)
         elif(msg['operacion'] == '4'):
-            self.eliminar(msg)         
+            self.eliminar(msg)     
+        elif(msg['operacion'] == '5'):
+            self.leer_llaves(msg)    
     
     def enviar(self, msg, port):
         msg = pickle.dumps(msg)
         length = len(msg)
         self.sock.sendto(struct.pack('!I', length),('localhost', port))
         self.sock.sendto(msg, ('localhost', port))
+        
 
     def crear(self, msg):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -106,6 +109,8 @@ class Balanceador_de_carga():
         
         self.enviar(msg, 5000)
         
+        msg = self.sock.recv(17520)
+        self.sendall(msg)
         
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -116,7 +121,11 @@ class Balanceador_de_carga():
         respuesta = llave.eliminar_llave(respuesta)
         llave.guardar_llaves()
         
+    def leer_llaves(self, msg):
+        self.enviar(msg, 5000)
         
+        msg = self.sock.recv(17520)
+        self.sendall(msg)
     
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  

@@ -40,6 +40,9 @@ class Cliente():
         self.msg['llave'] = llave
 
         self.enviar(self.msg)
+        
+        msg = self.sock.recv(17520)
+        print(msg)
 
     def actualizar(self, llave, path):
         #Actualizar registro de la base dec datos
@@ -52,11 +55,19 @@ class Cliente():
         self.enviar(self.msg)
 
     def eliminar(self, llave):
-    #Eliminar registro de la base de datos<
+        #Eliminar registro de la base de datos<
         self.msg['operacion'] = '4'
         self.msg['llave'] = llave
 
         self.enviar(self.msg)
+        
+    def leer_llaves(self):
+        #Obtener todas las llaves guardadas
+        self.msg['operacion'] = '5'
+        
+        msg = self.sock.recv(17520)
+        
+       
 
     def enviar(self, msg):   
         #Almacenar str en un contenedor dumps y enviar este al servidor
@@ -64,6 +75,7 @@ class Cliente():
         length = len(msg)
         self.sock.sendall(struct.pack('!I', length))
         self.sock.sendall(msg)
+        
        
     def recvall (self):
         #Recibir respueta del servidor si es necesario
@@ -78,4 +90,7 @@ if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5000)
     c.iniciar_conexion()
     c.crear('01', 'Telematica.png')
+    c.leer('01')
+    c.actualizar('01', 'Telematica.png')
+    c.eliminar('01')
     c.cerrar_conexion()
