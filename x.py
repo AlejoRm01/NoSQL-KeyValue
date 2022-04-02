@@ -8,6 +8,7 @@ def crear(llave):
     t.inicializar_tabla()
     t.crear_llave(llave)
     t.eliminar(llave)
+    t.ver_llave(1)
     t.guardar_llaves()
 
 msg = {
