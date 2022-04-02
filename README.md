@@ -4,8 +4,7 @@
 
 ### Materia Topicos de telematica de la universidad EAFIT 2022-1
 
-## Una pequeña introducción
-### Instalacción
+### Instalacción y ejecución
 ***
 ```
 $ git clone https://github.com/AlejoRm01/NoSQL-KeyValue
