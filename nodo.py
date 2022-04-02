@@ -73,6 +73,7 @@ class nodo():
             self.leer_llaves()
             
     def crear(self, msg):
+        print('Creando')
         aux = {
             'llave':msg['llave'],
             'servidor':msg['valor']
@@ -82,6 +83,8 @@ class nodo():
         t.inicializar_tabla()
         t.crear_llave(aux)
         t.guardar_llaves()
+
+        self.enviar(msg)
         
     
     def leer(self, msg):

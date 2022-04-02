@@ -82,8 +82,8 @@ class Balanceador_de_carga():
     def enviar(self, msg, port):
         msg = pickle.dumps(msg)
         length = len(msg)
-        self.sock.sendto(struct.pack('!I', length),('localhost', port))
-        self.sock.sendto(msg, ('localhost', port))
+        self.connection.sendto(struct.pack('!I', length),('localhost', port))
+        self.connection.sendto(msg, ('localhost', port))
         
 
     def crear(self, msg):

@@ -53,6 +53,5 @@ class tabla_valor():
     def eliminar(self, llave):
         for i in self.dicc:
             if str(llave) == str(i['llave']): 
-                print('entre')
                 self.dicc.remove(i)
     

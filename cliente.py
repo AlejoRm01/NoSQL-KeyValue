@@ -87,10 +87,9 @@ class Cliente():
 
 
 if __name__ == "__main__":
-    c = Cliente(hostname = 'localhost', port = 5000)
+    c = Cliente(hostname = 'localhost', port = 5050)
     c.iniciar_conexion()
     c.crear('01', 'Telematica.png')
-    c.leer('01')
-    c.actualizar('01', 'Telematica.png')
-    c.eliminar('01')
-    c.cerrar_conexion()
+    #c.leer('01')
+    #c.actualizar('01', 'Telematica.png')
+    #c.eliminar('01')
