@@ -28,11 +28,19 @@ $ py balanceador_de_carga.py
 ```
 
 #### Tercero cliente
-Se necesitan una llave y una ruta de algun archivo, el archivo es de libre eleccion dejamos uno por defecto, 
-pero se puede cambiar, encontraremos en la linea 80 de la clase cliente.py lo siguiente:
+El cliente puede crear un archivo en la base de datos, leerlo, actualizarlo y eliminarlo.
+Tambien se puede hacer mas de una operacion, y se pueden tener multiples clientes sin ningun problema.
+
+#### Crear
+Se necesitan una llave y una ruta de algun archivo, el archivo es de libre eleccion dejamos uno por defecto, pero se puede cambiar, encontraremos en la linea 80 de la clase cliente.py lo siguiente:
 ```
 c.crear('Llave_01', 'Telematica.png') 
 ```
+#### Leer 
+
+#### Actualizar
+
+#### Eliminar
 Solo es cambiar la llave por una de su elección, y el path del archivo por uno de su elección y 
 ejecutar de la siguiente forma:
 ```

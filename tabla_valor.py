@@ -4,8 +4,8 @@ import csv, os
 class tabla_llave():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'llaves_nodos.csv'
-        self.ESQUEMA_LLAVES = ['llave', 'servidor']
+        self.TABLA_LLAVES = 'llaves_valores.csv'
+        self.ESQUEMA_LLAVES = ['llave', 'valor']
         self.dicc = [] 
 
     def inicializar_tabla(self):
