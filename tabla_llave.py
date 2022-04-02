@@ -27,15 +27,8 @@ class tabla_llave():
         os.rename(tmp_tabla_llaves, self.TABLA_LLAVES)
                     
 
-    def ver_lista_llaves(self):
-        
-        aux = ''
-        for idx, llave in enumerate(self.dicc):
-            aux += ('{llave} | {servidor}\n').format(
-                llave = llave['llave'],
-                servidor = llave['servidor']
-            )
-        return aux
+    def leer_lista_llaves(self):
+        return self.dicc
 
     def crear_llave(self, llave):
         
@@ -48,20 +41,19 @@ class tabla_llave():
             self.dicc.append(llave)
                
 
+    def leer_llave(self, llave):
+        for i in self.dicc:
+            if str(llave) == str(i['llave']): 
+                return i
+
+
     def eliminar(self, llave):
         for i in self.dicc:
             if str(llave['llave']) == str(i['llave']): 
                 print('entre')
                 self.dicc.remove(i)
-                
-                
-    def ver_llave(self, llave):
-        for i in self.dicc:
-            if str(llave) == str(i['llave']): 
-                self.dicc.remove(i)
-                return i
-
     
+        
 
 
     

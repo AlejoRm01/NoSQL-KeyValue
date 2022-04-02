@@ -52,7 +52,7 @@ class Cliente():
         self.enviar(self.msg)
 
     def eliminar(self, llave):
-        #Eliminar registro de la base de datos
+    #Eliminar registro de la base de datos<
         self.msg['operacion'] = '4'
         self.msg['llave'] = llave
 

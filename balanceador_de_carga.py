@@ -86,31 +86,36 @@ class Balanceador_de_carga():
     def crear(self, msg):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         servidor = random.randrange(0, nServidores)
+        aux = {
+            'llave':msg['llave'],
+            'servidor':servidor
+        }
+        
+        t = tabla_llave()
+        t.inicializar_tabla()
+        t.crear_llave(aux)
+        t.guardar_llaves()
+        
         self.enviar(msg, 5000)
 
 
     def leer(self, msg):
         #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para entregar la llave y el valor al cliente
-        llave = tabla_llave()
-        llave.inicializar_tabla()
-        respuesta = llave.ver_llave(msg[1])
-        llave = None
+        t = tabla_llave()
+        t.inicializar_tabla()
+        t.leer_llave(msg['llave'])
+        t.guardar_llaves()
         
-    def actualizar(self, msg):
-        #Iniciar proceso de actulizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        #para actualizar el valor en el servidor
-        llave = tabla_llave()
-        llave.inicializar_tabla()
-        respuesta = llave.ver_llave(msg[1])
-        llave = None
+        self.enviar(msg, 5000)
+        
         
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
         llave = tabla_llave()
         llave.inicializar_tabla()
-        respuesta = llave.ver_llave(msg[1])
+        respuesta = llave.ver_llave(msg['llave'])
         respuesta = llave.eliminar_llave(respuesta)
         llave.guardar_llaves()
         llave = None
