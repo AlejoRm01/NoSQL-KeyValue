@@ -28,4 +28,3 @@ Por ultimo ejecutas el cliente
 path del archivo de la siguiente manera 
 py cliente.py 3043 C:\NoSQL-KeyValue\Telematica.png
 ```
-***
