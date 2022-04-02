@@ -70,7 +70,7 @@ class Tabla_llaves():
         return aux
     
     
-
+'''
 if __name__=='__main__':
 
     llave1 = {
@@ -100,7 +100,7 @@ if __name__=='__main__':
     print(tabla.crear_llave(llave4))
     tabla.guardar_llaves()
     tabla.ver_lista_llaves()
-
+'''
     
 
     

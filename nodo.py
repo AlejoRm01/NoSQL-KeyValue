@@ -1,7 +1,5 @@
 import multiprocessing
 import socket, struct, pickle
-
-from django.db import connection
 from tabla_valor import *
 
 class nodo():
@@ -9,9 +7,9 @@ class nodo():
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
-        self.arr = []
         self.connected = True
-        
+        self.msg = {}
+
     def iniciar_conexion(self):
         # Iniciar servicio 
         try:
@@ -29,47 +27,51 @@ class nodo():
             print('conectado con %r', self.addr)    
             #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
             #organizar datos para procesar y deseempaquetar la informacion
-            msg = ''
+            proceso = multiprocessing.Process(target= self.recibir_datos, args=())
+            # proceso.daemon = True
+            proceso.start()
+            print('Nuevo proceso inciado %r', proceso)
+
+    def recibir_datos(self):
+        #Recibir datos del cliente
+        while self.connected:
             try:
-                while self.connected:
-                    # Recibir datos del cliente.
-                    msg = self.connection.recv(1024)   
-                    msg = pickle.loads(msg)         
-                    msg = msg.decode() 
-                    if msg: 
-                        print("Envio efectivo")
-                        #self.connection.sendall(b'Se han recibido los datos')
-                        self.organizar_datos(msg)
-                        
-                        # Cerrar conexión
-                        self.sock.close()
-                        
-                        #Borrar objetos o variables
-                        self.sock = None
-                        self.connection = None
-                        self.addre = None
-                    else:
-                        break
-                    break
-                    
-            except Exception:
+                # Recibir datos del cliente.
+                lengthbuf = self.recvall(self.connection, 4)
+                length, = struct.unpack('!I', lengthbuf)
+                msg = self.recvall(self.connection, length)              
+                # self.conn.sendall(b'Se han recibido los datos')    
+                self.organizar_datos(msg)
+
+            except Exception as e:
                 self.connected = False
+                print(e)
+
+    def recvall (self, sock, count): 
+        buf = b'' 
+        while count: 
+            newbuf = sock.recv (count) 
+            if not  newbuf: return None 
+            buf += newbuf 
+            count -= len (newbuf) 
+        return buf 
 
     def organizar_datos(self, msg):
         #Se organiza la informacion
-        
-        
-        if(self.msg[0] == '1'):
-            self.crear()
-        elif(self.msg[0] == '2'):
-            self.leer()
-        elif(self.msg[0] == '3'):
-            self.actualizar()
-        elif(self.msg[0] == '4'):
-            self.eliminar()
+        msg = pickle.loads(msg)
+
+        if(msg['operacion'] == '1'):
+            self.crear(msg)
+        elif(msg['operacion'] == '2'):
+            self.leer(msg)
+        elif(msg['operacion'] == '3'):
+            self.actualizar(msg)
+        elif(msg['operacion'] == '4'):
+            self.eliminar(msg)
             
-    def crear(self):
-        print(self.msg)
+    def crear(self, msg):
+        
+        print(msg['operacion'], msg['llave'])
     
     def leer(self):
         pass

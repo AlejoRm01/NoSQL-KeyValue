@@ -5,7 +5,7 @@ class Cliente():
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port 
-        self.msg = ''
+        self.msg = {}
      
     def iniciar_conexion(self):
         # Iniciar servicio
@@ -27,40 +27,42 @@ class Cliente():
         #Crear un registro nuevo en la bases de datos
         valor = self.leer_archivo(path)
 
-        self.msg += str(1)
-        self.msg += '/' + str(llave)
-        self.msg += '/' + str(valor)
+        self.msg['operacion'] = '1'
+        self.msg['llave'] = llave
+        self.msg['valor'] = valor
     
-        self.enviar()
+        self.enviar(self.msg)
 
 
     def leer(self, llave):
         #Leer registro o registros de la base de datos
-        self.msg += str(2)
-        self.msg += '/' + str(llave)
+        self.msg['operacion'] = '2'
+        self.msg['llave'] = llave
 
-        self.enviar()
+        self.enviar(self.msg)
 
     def actualizar(self, llave, path):
         #Actualizar registro de la base dec datos
         valor = self.leer_archivo(path)
 
-        self.msg += str(3)
-        self.msg += '/' + str(llave)
-        self.msg += '/' + str(valor)
+        self.msg['operacion'] = '3'
+        self.msg['llave'] = llave
+        self.msg['valor'] = valor
 
-        self.enviar()
+        self.enviar(self.msg)
 
     def eliminar(self, llave):
         #Eliminar registro de la base de datos
-        self.msg += str(4)
-        self.msg += '/' + str(llave)
+        self.msg['operacion'] = '4'
+        self.msg['llave'] = llave
 
-        self.enviar()
+        self.enviar(self.msg)
 
-    def enviar(self):   
+    def enviar(self, msg):   
         #Almacenar str en un contenedor dumps y enviar este al servidor
-        msg = pickle.dumps(self.msg)
+        msg = pickle.dumps(msg)
+        length = len(msg)
+        self.sock.sendall(struct.pack('!I', length))
         self.sock.sendall(msg)
        
     def recvall (self):
@@ -73,8 +75,7 @@ class Cliente():
                 
    
 if __name__ == "__main__":
-    c = Cliente(hostname = 'localhost', port = 5050)
+    c = Cliente(hostname = 'localhost', port = 5000)
     c.iniciar_conexion()
-    c.crear('Hola', r'Telematica.png')
-    c.enviar()
+    c.crear('Hola', 'Telematica.png')
     c.cerrar_conexion()

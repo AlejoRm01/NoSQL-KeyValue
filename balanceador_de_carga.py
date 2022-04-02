@@ -1,5 +1,7 @@
+import multiprocessing
 import random
-import socket, multiprocessing, pickle
+import socket, pickle
+import struct
 from tabla_llave import *
 
 class Balanceador_de_carga():
@@ -12,11 +14,10 @@ class Balanceador_de_carga():
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
-        self.arr = []
-        self.msg = ''
+        self.msg = {}
         self.connected = True
         
-    def iniciar_escucha(self):
+    def iniciar_conexion(self):
         # Iniciar servicio 
         try:
             print('Escuchando')
@@ -33,87 +34,83 @@ class Balanceador_de_carga():
             print('conectado con %r', self.addr)    
             #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
             #organizar datos para procesar y deseempaquetar la informacion
-            msg = ''
+            proceso = multiprocessing.Process(target= self.recibir_datos, args=())
+            # proceso.daemon = True
+            proceso.start()
+            print('Nuevo proceso inciado %r', proceso)
+
+    def recibir_datos(self):
+        #Recibir datos del cliente
+        while self.connected:
             try:
-                while self.connected:
-                    # Recibir datos del cliente.
-                    msg = self.connection.recv(1024)   
-                    msg = pickle.loads(msg)         
-                    msg = msg.decode()
-                    print(msg)
-                    if msg: 
-                        print("Envio efectivo")
-                        #self.connection.sendall(b'Se han recibido los datos')
-                        self.organizar_datos(msg)
-                        
-                    else:
-                        break
-                    break
-                    
-            except Exception:
+                # Recibir datos del cliente.
+                lengthbuf = self.recvall(self.connection, 4)
+                length, = struct.unpack('!I', lengthbuf)
+                msg = self.recvall(self.connection, length)              
+                # self.conn.sendall(b'Se han recibido los datos')    
+                self.organizar_datos(msg)
+
+            except Exception as e:
                 self.connected = False
+                print(e)
+
+    def recvall (self, sock, count): 
+        buf = b'' 
+        while count: 
+            newbuf = sock.recv (count) 
+            if not  newbuf: return None 
+            buf += newbuf 
+            count -= len (newbuf) 
+        return buf        
                     
-            except Exception:
-                self.connected = False
-    
+
     def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
-        self.msg = msg.split('/')
-        print('estoy en organizar')
-        if(self.msg[0] == '1'):
-            self.crear()
-        elif(self.msg[0] == '2'):
-            self.leer()
-        elif(self.msg[0] == '3'):
-            self.actualizar()
-        elif(self.msg[0] == '4'):
-            self.eliminar()
-            
-    def iniciar_conexion_nodo(self, host, port):
-        #Establecer conexion con uno de los nodos
-        try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((host, port))
-        except Exception as e:
-            print(e)
+        msg = pickle.loads(msg)
+
+        if(msg['operacion'] == '1'):
+            self.crear(msg)
+        elif(msg['operacion'] == '2'):
+            self.leer(msg)
+        elif(msg['operacion'] == '3'):
+            self.actualizar(msg)
+        elif(msg['operacion'] == '4'):
+            self.eliminar(msg)         
     
-    def enviar(self, msg):
+    def enviar(self, msg, port):
         msg = pickle.dumps(msg)
-        self.sock.send(msg)
+        length = len(msg)
+        self.sock.sendto(struct.pack('!I', length),('localhost', port))
+        self.sock.sendto(msg, ('localhost', port))
 
-    def crear(self):
+    def crear(self, msg):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        print('estoy en crear')
-        servidor = random.randrange(0,nServidores)
-        aux = [self.msg[1],servidor] 
-        llave = Tabla_llaves()
-        llave.inicializar_tabla()
-        llave.crear_llave(aux)
-        llave.guardar_llaves()
+        servidor = random.randrange(0, nServidores)
+        self.enviar(msg, 5000)
 
 
-    def leer(self):
+    def leer(self, msg):
         #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para entregar la llave y el valor al cliente
         llave = Tabla_llaves()
         llave.inicializar_tabla()
-        respuesta = llave.ver_llave(self.msg[1])
+        respuesta = llave.ver_llave(msg[1])
         llave = None
         
-    def actualizar(self):
+    def actualizar(self, msg):
         #Iniciar proceso de actulizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para actualizar el valor en el servidor
         llave = Tabla_llaves()
         llave.inicializar_tabla()
-        respuesta = llave.ver_llave(self.msg[1])
+        respuesta = llave.ver_llave(msg[1])
         llave = None
         
-    def eliminar(self):
+    def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
         llave = Tabla_llaves()
         llave.inicializar_tabla()
-        respuesta = llave.ver_llave(self.msg[1])
+        respuesta = llave.ver_llave(msg[1])
         respuesta = llave.eliminar_llave(respuesta)
         llave.guardar_llaves()
         llave = None
@@ -122,5 +119,5 @@ class Balanceador_de_carga():
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  
     s = Balanceador_de_carga( hostname = 'localhost', port = 5050)
-    s.iniciar_escucha()
+    s.iniciar_conexion()
     s.aceptar_conexion()
