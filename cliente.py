@@ -1,4 +1,4 @@
-import socket, pickle, struct, os
+import socket, pickle, struct, sys
 
 class Cliente():
     
@@ -72,10 +72,11 @@ class Cliente():
     def cerrar_conexion(self):
         #Cerrar conexion 
         self.sock.close()
-                
-   
+
+llave = sys.argv[0]                
+documento = sys.argv[1]   
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5000)
     c.iniciar_conexion()
-    c.crear('Hola', 'Telematica.png')
+    c.crear(llave, documento)
     c.cerrar_conexion()
