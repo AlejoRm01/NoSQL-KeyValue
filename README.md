@@ -24,7 +24,8 @@ py nodo.py 6000
 ```
 Por ultimo ejecutas el cliente
 ```
-// Se necesitan dos argumentos para la ejecucion los cuales son en su respectivo orden llave y path del archivo de la siguiente manera 
+// Se necesitan dos argumentos para la ejecucion los cuales son en su respectivo orden llave y 
+path del archivo de la siguiente manera 
 py cliente.py 3043 C:\NoSQL-KeyValue\Telematica.png
 ```
 ***
