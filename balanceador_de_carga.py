@@ -118,7 +118,7 @@ class Balanceador_de_carga():
         respuesta = llave.ver_llave(msg['llave'])
         respuesta = llave.eliminar_llave(respuesta)
         llave.guardar_llaves()
-        llave = None
+        
         
     
 if __name__ == "__main__":

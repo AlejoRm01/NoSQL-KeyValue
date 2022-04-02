@@ -31,7 +31,6 @@ class tabla_llave():
         return self.dicc
 
     def crear_llave(self, llave):
-        
         aux = 0
         for i in self.dicc:
             if str(llave['llave']) == str(i['llave']): 
@@ -49,7 +48,7 @@ class tabla_llave():
 
     def eliminar(self, llave):
         for i in self.dicc:
-            if str(llave['llave']) == str(i['llave']): 
+            if str(llave) == str(i['llave']): 
                 print('entre')
                 self.dicc.remove(i)
     
