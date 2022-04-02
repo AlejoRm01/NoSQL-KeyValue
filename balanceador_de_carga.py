@@ -92,7 +92,7 @@ class Balanceador_de_carga():
     def leer(self, msg):
         #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para entregar la llave y el valor al cliente
-        llave = Tabla_llaves()
+        llave = tabla_llave()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(msg[1])
         llave = None
@@ -100,7 +100,7 @@ class Balanceador_de_carga():
     def actualizar(self, msg):
         #Iniciar proceso de actulizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para actualizar el valor en el servidor
-        llave = Tabla_llaves()
+        llave = tabla_llave()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(msg[1])
         llave = None
@@ -108,7 +108,7 @@ class Balanceador_de_carga():
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
-        llave = Tabla_llaves()
+        llave = tabla_llave()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(msg[1])
         respuesta = llave.eliminar_llave(respuesta)
