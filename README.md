@@ -12,11 +12,7 @@ $ cd ../path/to/the/file/NoSQL-KeyValue
 ```
 ### Ejecución
 ***
-#### Primero ejecutas el balanceardor de cargar de la siguiente forma:
-```
-$ py balanceador_de_carga.py
-```
-#### Seguido los nodos que desea tener
+#### Primero nodos
 Se necesita un puerto diferente por nodo, encontraremos en la linea 88 de la clase nodo.py lo siguiente:
 ```
  s = nodo( hostname = 'localhost', port = 5000)
@@ -26,7 +22,12 @@ Solo es cambiar el puerto por uno que no este repetido y ejecutar de la siguient
 $ py nodo.py
 ```
 
-#### Por ultimo ejecutas el cliente
+#### Segundo balanceardor de cargar
+```
+$ py balanceador_de_carga.py
+```
+
+#### Tercero cliente
 Se necesitan una llave y una ruta de algun archivo, el archivo es de libre eleccion dejamos uno por defecto, 
 pero se puede cambiar, encontraremos en la linea 80 de la clase cliente.py lo siguiente:
 ```
