@@ -70,8 +70,8 @@ class nodo():
             self.eliminar(msg)
             
     def crear(self, msg):
-        
-        print(msg['operacion'], msg['llave'])
+        print('LO LOGREEEEEEEEEEEEE')
+        print(msg['operacion'], msg['llave'], msg['valor'])
     
     def leer(self):
         pass
