@@ -19,7 +19,7 @@ py balanceador_de_carga.py
 ```
 Seguido los nodos que desea tener
 ```
-// Se necesitan un argumento para la ejecucion el cual es son en su el puerto que tendra este nodo
+// Se necesitan un argumento para la ejecucion el cual es el puerto que tendra este nodo
 py nodo.py 6000
 ```
 Por ultimo ejecutas el cliente
