@@ -1,7 +1,7 @@
 import csv, os
 
 
-class tabla_llave():
+class tabla_valor():
     
     def __init__(self):
         self.TABLA_LLAVES = 'llaves_valores.csv'
@@ -45,7 +45,11 @@ class tabla_llave():
             if str(llave) == str(i['llave']): 
                 return i
 
-
+    def actualizar_llave(self, llave):
+        for i in self.dicc:
+            if str(llave['llave']) == str(i['llave']): 
+                i['valor'] = llave['valor']
+    
     def eliminar(self, llave):
         for i in self.dicc:
             if str(llave) == str(i['llave']): 

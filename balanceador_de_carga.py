@@ -100,12 +100,9 @@ class Balanceador_de_carga():
 
 
     def leer(self, msg):
-        #Iniciar proceso de recuperar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        #para entregar la llave y el valor al cliente
         t = tabla_llave()
         t.inicializar_tabla()
-        t.leer_llave(msg['llave'])
-        t.guardar_llaves()
+        msg = t.leer_llave(msg['llave'])
         
         self.enviar(msg, 5000)
         
