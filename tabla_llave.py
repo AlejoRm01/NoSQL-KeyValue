@@ -48,9 +48,16 @@ class tabla_llave():
             self.dicc.append(llave)
             return 'Se creo correctamente la llave: {} en el servidor {}'.format(llave['llave'], llave['servidor'])
         else: 
-            self.eliminar_llave(llave)
             return 'Ya existe en la lista la llave: {}'.format(llave['llave'])    
 
+    def eliminar(self, llave):
+        for i in self.dicc:
+            print(i)
+            if str(llave) == str(i['llave']): 
+                self.dicc.pop(i)
+                return 'Se elimino correctamente: {}'.format(i)
+            else:
+                return 'No exite la llave: {}'.format(llave)
                 
     def ver_llave(self, llave):
         
@@ -61,15 +68,6 @@ class tabla_llave():
     
         return aux
     
-    
-    def eliminar_llave(self, llave):
-        print(llave)
-        for i in self.dicc:
-            if str(llave) == str(i['llave']): 
-                self.dicc.pop(i)
-                return 'Se elimino correctamente: {}'.format(i)
-            else:
-                return 'No exite la llave: {}'.format(llave)
 
 
     
