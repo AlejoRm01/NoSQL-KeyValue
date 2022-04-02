@@ -22,7 +22,7 @@ Solo es cambiar el puerto por uno que no este repetido y ejecutar de la siguient
 $ py nodo.py
 ```
 
-#### Segundo balanceardor de cargar
+#### Segundo balanceardor de carga
 ```
 $ py balanceador_de_carga.py
 ```
