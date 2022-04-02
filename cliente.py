@@ -73,10 +73,9 @@ class Cliente():
         #Cerrar conexion 
         self.sock.close()
 
-llave = sys.argv[0]                
-documento = sys.argv[1]   
+
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5000)
     c.iniciar_conexion()
-    c.crear(llave, documento)
+    c.crear('Llave_01', 'Telematica.png')
     c.cerrar_conexion()
