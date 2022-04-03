@@ -76,7 +76,7 @@ class nodo():
         print('Creando')
         aux = {
             'llave':msg['llave'],
-            'servidor':msg['valor']
+            'valor':msg['valor']
         }
         
         t = tabla_valores()
