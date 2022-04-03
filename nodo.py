@@ -79,10 +79,10 @@ class nodo():
             'servidor':msg['valor']
         }
         
-        t = tabla_valor()
-        t.inicializar_tabla()
-        t.crear_llave(aux)
-        t.guardar_llaves()
+        #t = tabla_valor()
+        #t.inicializar_tabla()
+        #t.crear_llave(aux)
+        #t.guardar_llaves()
 
         self.enviar(msg)
         
@@ -116,8 +116,7 @@ class nodo():
         self.enviar(msg)
 
     def enviar(self, msg):
-        msg = pickle.dumps(msg)
-        self.conn.sendall(msg)
+        print(msg)
         
     
 if __name__ == "__main__":

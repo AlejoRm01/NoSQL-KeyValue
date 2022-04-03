@@ -80,10 +80,17 @@ class Balanceador_de_carga():
             self.leer_llaves(msg)    
     
     def enviar(self, msg, port):
+        #Enviar datos al nodo  
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect((self.hostname, 5000))
+
+        print('estoy en enviar')
         msg = pickle.dumps(msg)
         length = len(msg)
-        self.connection.sendto(struct.pack('!I', length),('localhost', port))
-        self.connection.sendto(msg, ('localhost', port))
+        connection.sendall(struct.pack('!I', length))
+        print('1')
+        connection.sendall(msg)
+        print('2')
         
 
     def crear(self, msg):
