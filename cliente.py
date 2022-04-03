@@ -101,11 +101,7 @@ class Cliente():
 
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5050)
-    c.iniciar_conexion()
+    #c.iniciar_conexion()
     #c.crear('01', 'Odio a todo el mundo')
-    #c.crear('02', 'Odio')
-    c.crear('03', 'mundo')
-    #c.crear_archivo('01', 'Telematica.png')
-    #c.leer('01')
     #c.actualizar('01', 'Telematica')
     #c.eliminar('01')
