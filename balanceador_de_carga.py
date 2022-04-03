@@ -7,8 +7,8 @@ import argparse
 
 class Balanceador_de_carga():
 
-    def __init__(self, hostname, port, ports):
-        self.puertos = ports
+    def __init__(self, hostname, port, puertos):
+        self.puertos = puertos
         self.nNodos = int(len(self.puertos))
         self.hostname = hostname
         self.port = port
