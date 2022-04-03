@@ -2,14 +2,15 @@ import multiprocessing
 import random
 import socket, pickle
 import struct
+from nodo import nodo
 from tabla_nodos import *
 
 class Balanceador_de_carga():
     
-    global nServidores
-    nServidores = 3
     global port_nodo
-    port_nodo = [5000, 5001, 5002, 5003]
+    port_nodo = [5000, 5001]
+    global nNodos
+    nNodos = int(len(port_nodo))
     
     def __init__(self, hostname, port):
         self.hostname = hostname
@@ -66,6 +67,7 @@ class Balanceador_de_carga():
 
     def organizar_datos(self, msg):
         #Se deseempaqueta el dato y se organiza la informacion
+        self.connection.close()
         msg = pickle.loads(msg)
 
         if(msg['operacion'] == '1'):
@@ -75,30 +77,19 @@ class Balanceador_de_carga():
         elif(msg['operacion'] == '3'):
             self.actualizar(msg)
         elif(msg['operacion'] == '4'):
-            self.eliminar(msg)     
-        elif(msg['operacion'] == '5'):
-            self.leer_llaves(msg)    
-    
-    def enviar(self, msg, port):
-        #Enviar datos al nodo  
-        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        connection.connect((self.hostname, 5000))
-
-        print('estoy en enviar')
-        msg = pickle.dumps(msg)
-        length = len(msg)
-        connection.sendall(struct.pack('!I', length))
-        print('1')
-        connection.sendall(msg)
-        print('2')
-        
+            self.eliminar(msg)                    
 
     def crear(self, msg):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        servidor = random.randrange(0, nServidores)
+        nodo = 0
+        if nNodos-1 == 0:
+            nodo = 0
+        else:
+            nodo = random.randrange(0, nNodos)
+       
         aux = {
             'llave':msg['llave'],
-            'servidor':servidor
+            'nodo':nodo
         }
         
         t = tabla_nodos()
@@ -106,34 +97,46 @@ class Balanceador_de_carga():
         t.crear_llave(aux)
         t.guardar_llaves()
         
-        self.enviar(msg, 5000)
-
+        self.enviar(msg, port_nodo[nodo])
 
     def leer(self, msg):
+        #Iniciar proceso de leer un registro de la tabla de llaves y nodos, ademas de iniciar el proceso con el nodo
         t = tabla_nodos()
         t.inicializar_tabla()
-        msg = t.leer_llave(msg['llave'])
+        nodo = t.leer_llave(msg['llave'])
+        self.enviar(msg, port_nodo[int(nodo)])
         
-        self.enviar(msg, 5000)
-        
-        msg = self.sock.recv(17520)
-        self.sendall(msg)
-        
+    def actualizar(self, msg):
+        #Iniciar proceso de actualizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
+        #para actualizar la llave y el valor en el servidor
+        t = tabla_nodos()
+        t.inicializar_tabla()
+        nodo = t.leer_llave(msg['llave'])
+        self.enviar(msg, port_nodo[int(nodo)])
+
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
-        llave = tabla_nodos()
-        llave.inicializar_tabla()
-        respuesta = llave.ver_llave(msg['llave'])
-        respuesta = llave.eliminar_llave(respuesta)
-        llave.guardar_llaves()
-        
-    def leer_llaves(self, msg):
-        self.enviar(msg, 5000)
-        
-        msg = self.sock.recv(17520)
-        self.sendall(msg)
+        t = tabla_nodos()
+        t.inicializar_tabla()
+        nodo = t.leer_llave(msg['llave'])
+        t.eliminar(msg['llave'])
+        t.guardar_llaves()
+        self.enviar(msg, port_nodo[int(nodo)])
     
+    def enviar(self, msg, port):
+        #Enviar datos al nodo  
+        print('Enviando datos')
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect(('localhost', port))
+
+        msg = pickle.dumps(msg)
+        length = len(msg)
+        
+        connection.sendall(struct.pack('!I', length))
+        connection.sendall(msg)
+        connection.close()
+
 if __name__ == "__main__":
  # Probar conexion entre cliente y socket  
     s = Balanceador_de_carga( hostname = 'localhost', port = 5050)

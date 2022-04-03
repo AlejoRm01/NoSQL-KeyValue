@@ -1,5 +1,4 @@
-import csv, os
-
+import csv, sys, os
 
 class tabla_valores():
     
@@ -20,9 +19,9 @@ class tabla_valores():
     def guardar_llaves(self):
 
         tmp_tabla_llaves = '{}.tmp'.format(self.TABLA_LLAVES)
+
         with open(tmp_tabla_llaves, mode='w', encoding = 'utf-8') as f:
             escritor = csv.DictWriter(f, fieldnames=self.ESQUEMA_LLAVES)
-            print(self.dicc)
             escritor.writerows(self.dicc)
             os.remove(self.TABLA_LLAVES)
         os.rename(tmp_tabla_llaves, self.TABLA_LLAVES)

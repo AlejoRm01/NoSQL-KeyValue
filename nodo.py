@@ -70,8 +70,6 @@ class nodo():
             self.actualizar(msg)
         elif(msg['operacion'] == '4'):
             self.eliminar(msg)
-        elif(msg['operacion'] == '5'):
-            self.leer_llaves()
             
     def crear(self, msg):
         print('Creando')
@@ -84,15 +82,12 @@ class nodo():
         t.inicializar_tabla()
         t.crear_llave(aux)
         t.guardar_llaves()
-
-        self.enviar(msg)
         
-    
     def leer(self, msg):
         t = tabla_valores()
         t.inicializar_tabla()
         msg = t.leer_llave(msg['llave'])
-                
+         
         self.enviar(msg)
         
     def actualizar(self, msg):
@@ -101,31 +96,31 @@ class nodo():
         t.actualizar_llave(msg)
         t.guardar_llaves()
         
-    
     def eliminar(self, msg):
         t = tabla_valores()
         t.inicializar_tabla()
-        t.eliminar_llave(msg)
+        t.eliminar(msg['llave'])
         t.guardar_llaves()
         
-        
-    def leer_llaves(self):
-        t = tabla_valores()
-        t.inicializar_tabla()
-        msg = t.leer_lista_llaves()
-        
-        self.enviar(msg)
 
     def enviar(self, msg):
-        print(msg['llave'])
+        #Enviar datos al nodo  
+        print('Enviando datos')
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect((self.hostname, 4999))
+
+        msg = pickle.dumps(msg)
+        length = len(msg)
+        
+        connection.sendall(struct.pack('!I', length))
+        connection.sendall(msg)
+        connection.close()
         
     
 if __name__ == "__main__":
-
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--hostname', default='localhost')
-    parser.add_argument('--port', default=5050, type=int)
-    s = nodo( hostname = 'localhost', port = 5000)
+    parser.add_argument('port', default=5000, type=int)
+    args = parser.parse_args()
+    s = nodo( hostname = 'localhost', port = args.port)
     s.iniciar_conexion()
     s.aceptar_conexion()

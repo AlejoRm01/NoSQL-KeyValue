@@ -43,7 +43,7 @@ class tabla_nodos():
     def leer_llave(self, llave):
         for i in self.dicc:
             if str(llave) == str(i['llave']): 
-                return i
+                return i['nodo']
 
 
     def eliminar(self, llave):
