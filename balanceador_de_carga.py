@@ -2,17 +2,14 @@ import multiprocessing
 import random
 import socket, pickle
 import struct
-from nodo import nodo
 from tabla_nodos import *
+import argparse
 
 class Balanceador_de_carga():
-    
-    global port_nodo
-    port_nodo = [5000, 5001]
-    global nNodos
-    nNodos = int(len(port_nodo))
-    
-    def __init__(self, hostname, port):
+
+    def __init__(self, hostname, port, ports):
+        self.puertos = ports
+        self.nNodos = int(len(self.puertos))
         self.hostname = hostname
         self.port = port
         self.msg = {}
@@ -82,10 +79,10 @@ class Balanceador_de_carga():
     def crear(self, msg):
         #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         nodo = 0
-        if nNodos-1 == 0:
+        if self.nNodos-1 == 0:
             nodo = 0
         else:
-            nodo = random.randrange(0, nNodos)
+            nodo = random.randrange(0, self.nNodos)
        
         aux = {
             'llave':msg['llave'],
@@ -97,14 +94,14 @@ class Balanceador_de_carga():
         t.crear_llave(aux)
         t.guardar_llaves()
         
-        self.enviar(msg, port_nodo[nodo])
+        self.enviar(msg, self.puertos[nodo])
 
     def leer(self, msg):
         #Iniciar proceso de leer un registro de la tabla de llaves y nodos, ademas de iniciar el proceso con el nodo
         t = tabla_nodos()
         t.inicializar_tabla()
         nodo = t.leer_llave(msg['llave'])
-        self.enviar(msg, port_nodo[int(nodo)])
+        self.enviar(msg, self.puertos[int(nodo)])
         
     def actualizar(self, msg):
         #Iniciar proceso de actualizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -112,7 +109,7 @@ class Balanceador_de_carga():
         t = tabla_nodos()
         t.inicializar_tabla()
         nodo = t.leer_llave(msg['llave'])
-        self.enviar(msg, port_nodo[int(nodo)])
+        self.enviar(msg, self.puertos[int(nodo)])
 
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -122,7 +119,7 @@ class Balanceador_de_carga():
         nodo = t.leer_llave(msg['llave'])
         t.eliminar(msg['llave'])
         t.guardar_llaves()
-        self.enviar(msg, port_nodo[int(nodo)])
+        self.enviar(msg, self.puertos[int(nodo)])
     
     def enviar(self, msg, port):
         #Enviar datos al nodo  
@@ -138,7 +135,11 @@ class Balanceador_de_carga():
         connection.close()
 
 if __name__ == "__main__":
- # Probar conexion entre cliente y socket  
-    s = Balanceador_de_carga( hostname = 'localhost', port = 5050)
+    # Probar conexion entre cliente y socket  
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', nargs="+", default=5000, type=int)
+    args = parser.parse_args()
+
+    s = Balanceador_de_carga( hostname = 'localhost', port = 5050, puertos = args.a)
     s.iniciar_conexion()
     s.aceptar_conexion()
