@@ -41,11 +41,11 @@ El cliente puede crear, leer, actualizar y eliminar.
 
 #### Crear
 ```
-c.crear('Llave_01', 'Juan Carlos es el mejor profesor') 
+c.crear('01', 'Juan Carlos es el mejor profesor') 
 ```
 #### Leer 
 ```
-c.leer('Llave_01')
+c.leer('01')
 ``` 
 #### Actualizar
 ```
