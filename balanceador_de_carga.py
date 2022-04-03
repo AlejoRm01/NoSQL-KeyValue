@@ -2,7 +2,7 @@ import multiprocessing
 import random
 import socket, pickle
 import struct
-from tabla_llave import *
+from tabla_nodos import *
 
 class Balanceador_de_carga():
     
@@ -101,7 +101,7 @@ class Balanceador_de_carga():
             'servidor':servidor
         }
         
-        t = tabla_llave()
+        t = tabla_nodos()
         t.inicializar_tabla()
         t.crear_llave(aux)
         t.guardar_llaves()
@@ -110,7 +110,7 @@ class Balanceador_de_carga():
 
 
     def leer(self, msg):
-        t = tabla_llave()
+        t = tabla_nodos()
         t.inicializar_tabla()
         msg = t.leer_llave(msg['llave'])
         
@@ -122,7 +122,7 @@ class Balanceador_de_carga():
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
-        llave = tabla_llave()
+        llave = tabla_nodos()
         llave.inicializar_tabla()
         respuesta = llave.ver_llave(msg['llave'])
         respuesta = llave.eliminar_llave(respuesta)

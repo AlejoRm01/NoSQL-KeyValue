@@ -1,11 +1,11 @@
 import csv, os
 
 
-class tabla_llave():
+class tabla_nodos():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'llaves_nodos.csv'
-        self.ESQUEMA_LLAVES = ['llave', 'servidor']
+        self.TABLA_LLAVES = 'tabla_nodos.csv'
+        self.ESQUEMA_LLAVES = ['llave', 'nodo']
         self.dicc = [] 
 
     def inicializar_tabla(self):
@@ -49,7 +49,6 @@ class tabla_llave():
     def eliminar(self, llave):
         for i in self.dicc:
             if str(llave) == str(i['llave']): 
-                print('entre')
                 self.dicc.remove(i)
     
         

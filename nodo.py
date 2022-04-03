@@ -1,6 +1,6 @@
 import multiprocessing
 import socket, struct, pickle
-from tabla_valor import *
+from tabla_valores import *
 
 class nodo():
     
@@ -79,44 +79,44 @@ class nodo():
             'servidor':msg['valor']
         }
         
-        #t = tabla_valor()
-        #t.inicializar_tabla()
-        #t.crear_llave(aux)
-        #t.guardar_llaves()
+        t = tabla_valores()
+        t.inicializar_tabla()
+        t.crear_llave(aux)
+        t.guardar_llaves()
 
         self.enviar(msg)
         
     
     def leer(self, msg):
-        t = tabla_valor()
+        t = tabla_valores()
         t.inicializar_tabla()
         msg = t.leer_llave(msg['llave'])
                 
         self.enviar(msg)
         
     def actualizar(self, msg):
-        t = tabla_valor()
+        t = tabla_valores()
         t.inicializar_tabla()
         t.actualizar_llave(msg)
         t.guardar_llaves()
         
     
     def eliminar(self, msg):
-        t = tabla_valor()
+        t = tabla_valores()
         t.inicializar_tabla()
         t.eliminar_llave(msg)
         t.guardar_llaves()
         
         
     def leer_llaves(self):
-        t = tabla_valor()
+        t = tabla_valores()
         t.inicializar_tabla()
         msg = t.leer_lista_llaves()
         
         self.enviar(msg)
 
     def enviar(self, msg):
-        print(msg)
+        print(msg['llave'])
         
     
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import csv, os
 
 
-class tabla_valor():
+class tabla_valores():
     
     def __init__(self):
         self.TABLA_LLAVES = 'llaves_valores.csv'
