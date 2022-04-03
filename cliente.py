@@ -23,15 +23,29 @@ class Cliente():
 
         return archivo
     
-    def crear(self, llave, path):
+    def crear_archivo(self, llave, path):
         #Crear un registro nuevo en la bases de datos
         valor = self.leer_archivo(path)
+
+        valor = pickle.dumps(valor)
 
         self.msg['operacion'] = '1'
         self.msg['llave'] = llave
         self.msg['valor'] = valor
     
         self.enviar(self.msg)
+
+    def crear(self, llave, valor):
+        #Crear un registro nuevo en la bases de datos
+
+        valor = pickle.dumps(valor)
+
+        self.msg['operacion'] = '1'
+        self.msg['llave'] = llave
+        self.msg['valor'] = valor
+    
+        self.enviar(self.msg)
+
 
 
     def leer(self, llave):
@@ -66,8 +80,6 @@ class Cliente():
         self.msg['operacion'] = '5'
         
         msg = self.sock.recv(17520)
-        
-       
 
     def enviar(self, msg):   
         #Almacenar str en un contenedor dumps y enviar este al servidor
@@ -89,7 +101,7 @@ class Cliente():
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5050)
     c.iniciar_conexion()
-    c.crear('01', 'Telematica.png')
+    c.crear('01', 'Odio a todo el mundo')
     #c.leer('01')
     #c.actualizar('01', 'Telematica.png')
     #c.eliminar('01')
