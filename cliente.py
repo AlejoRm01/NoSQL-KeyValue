@@ -38,7 +38,7 @@ class Cliente():
     def crear(self, llave, valor):
         #Crear un registro nuevo en la bases de datos
 
-        valor = pickle.dumps(valor)
+        #valor = pickle.dumps(valor)
 
         self.msg['operacion'] = '1'
         self.msg['llave'] = llave
@@ -101,7 +101,8 @@ class Cliente():
 if __name__ == "__main__":
     c = Cliente(hostname = 'localhost', port = 5050)
     c.iniciar_conexion()
-    c.crear('01', 'Odio a todo el mundo')
+    #c.crear_archivo('01', 'Odio a todo el mundo')
+    c.crear_archivo('01', 'Telematica.png')
     #c.leer('01')
     #c.actualizar('01', 'Telematica.png')
     #c.eliminar('01')
