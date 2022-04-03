@@ -1,6 +1,7 @@
 import multiprocessing
 import socket, struct, pickle
 from tabla_valores import *
+import argparse
 
 class nodo():
     
@@ -120,7 +121,10 @@ class nodo():
         
     
 if __name__ == "__main__":
-    # Probar conexion entre cliente y socket  
-    s = nodo( hostname = 'localhost', port = 5000)
-    s.iniciar_conexion()
-    s.aceptar_conexion()
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('Puerto', type=int, help='Puerto del nodo')
+    args = parser.parse_args()
+    nodo = nodo('localhost', args.Puerto)
+    nodo.iniciar_conexion()
+    nodo.aceptar_conexion()
