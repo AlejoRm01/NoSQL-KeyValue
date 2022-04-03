@@ -13,36 +13,50 @@ $ cd ../path/to/the/file/NoSQL-KeyValue
 ### Ejecución
 ***
 #### Primero nodos
-Se necesita un puerto diferente por nodo, encontraremos en la linea 88 de la clase nodo.py lo siguiente:
-```
- s = nodo( hostname = 'localhost', port = 5000)
-```
-Solo es cambiar el puerto por uno que no este repetido y ejecutar de la siguiente forma:
+Se necesita un puerto diferente por nodo, si se va a ejecutar un solo nodo por default estara en el
+puerto 5000, se puede ejecutar de la siguiente manera: 
 ```
 $ py nodo.py
 ```
-
+De lo contrario si se quiere mas de un nodo al tiempo se debe ejecutar en diferentes consolas añadiendo como argumento el puerto
+ejemplo:
+```
+$ py nodo.py 5000
+$ py nodo.py 5001
+$ py nodo.py 5002
+$ py nodo.py 5003
+```
 #### Segundo balanceardor de carga
+Si solo de dispone un nodo se ejecuta asi:
 ```
 $ py balanceador_de_carga.py
 ```
+Si hay mas de un nodo debes adiccionar los puertos de los nodos de esta manera:
+```
+$ py balanceador_de_carga.py 5000 5001 5002 5003
+```
 
 #### Tercero cliente
-El cliente puede crear un archivo en la base de datos, leerlo, actualizarlo y eliminarlo.
-Tambien se puede hacer mas de una operacion, y se pueden tener multiples clientes sin ningun problema.
+El cliente puede crear, leer, actualizar y eliminar.
 
 #### Crear
-Se necesitan una llave y una ruta de algun archivo, el archivo es de libre eleccion dejamos uno por defecto, pero se puede cambiar, encontraremos en la linea 80 de la clase cliente.py lo siguiente:
 ```
-c.crear('Llave_01', 'Telematica.png') 
+c.crear('Llave_01', 'Juan Carlos es el mejor profesor') 
 ```
 #### Leer 
-
+```
+c.leer('Llave_01')
+``` 
 #### Actualizar
-
+```
+#c.actualizar('01', 'Telematica')
+```
 #### Eliminar
-Solo es cambiar la llave por una de su elección, y el path del archivo por uno de su elección y 
-ejecutar de la siguiente forma:
+```
+#c.eliminar('01')
+```
+Solo es cambiar la llave por una de su elección, y el valor por uno de su elección.
+#### Ejecutar de la siguiente forma:
 ```
 $ py cliente.py 
 ```
