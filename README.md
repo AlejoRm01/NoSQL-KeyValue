@@ -16,24 +16,24 @@ $ cd ../path/to/the/file/NoSQL-KeyValue
 Se necesita un puerto diferente por nodo, si se va a ejecutar un solo nodo por default estara en el
 puerto 5000, se puede ejecutar de la siguiente manera: 
 ```
-$ py nodo.py
+$ py Nodo.py
 ```
 De lo contrario si se quiere mas de un nodo al tiempo se debe ejecutar en diferentes consolas añadiendo como argumento el puerto
 ejemplo:
 ```
-$ py nodo.py 5000
-$ py nodo.py 5001
-$ py nodo.py 5002
-$ py nodo.py 5003
+$ py Nodo.py 5000
+$ py Nodo.py 5001
+$ py Nodo.py 5002
+$ py Nodo.py 5003
 ```
 #### Segundo balanceardor de carga
 Si solo de dispone un nodo se ejecuta asi:
 ```
-$ py balanceador_de_carga.py
+$ py Balanceador.py
 ```
 Si hay mas de un nodo debes adiccionar los puertos de los nodos de esta manera:
 ```
-$ py balanceador_de_carga.py 5000 5001 5002 5003
+$ py Balanceador.py 5000 5001 5002 5003
 ```
 
 #### Tercero cliente
@@ -41,7 +41,7 @@ El cliente puede crear, leer, actualizar y eliminar.
 
 #### Crear
 ```
-c.crear('01', 'Juan Carlos es el mejor profesor') 
+c.crear('01', 'Alejandro Rodriguez prueba') 
 ```
 #### Leer 
 ```
@@ -49,7 +49,7 @@ c.leer('01')
 ``` 
 #### Actualizar
 ```
-#c.actualizar('01', 'Telematica')
+#c.actualizar('01', 'Sistemas operativos')
 ```
 #### Eliminar
 ```
@@ -58,5 +58,5 @@ c.leer('01')
 Solo es cambiar la llave por una de su elección, y el valor por uno de su elección.
 #### Ejecutar de la siguiente forma:
 ```
-$ py cliente.py 
+$ py Cliente.py 
 ```

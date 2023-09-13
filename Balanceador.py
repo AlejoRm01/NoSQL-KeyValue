@@ -2,10 +2,10 @@ import multiprocessing
 import random
 import socket, pickle
 import struct
-from tabla_nodos import *
+from TablaNodos import *
 import argparse
 
-class Balanceador_de_carga():
+class Balanceador():
 
     def __init__(self, hostname, port, puertos):
         self.puertos = puertos
@@ -140,6 +140,6 @@ if __name__ == "__main__":
     parser.add_argument('-a', nargs="+", default=5000, type=int)
     args = parser.parse_args()
 
-    s = Balanceador_de_carga( hostname = 'localhost', port = 5050, puertos = args.a)
+    s = Balanceador( hostname = 'localhost', port = 5050, puertos = args.a)
     s.iniciar_conexion()
     s.aceptar_conexion()

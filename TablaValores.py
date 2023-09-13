@@ -1,31 +1,20 @@
-import csv, sys, os
+import os
+import json
 
 class tabla_valores():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'tabla_valores.csv'
-        self.ESQUEMA_LLAVES = ['llave', 'valor']
-        self.dicc = [] 
+        self.TABLA_LLAVES = 'tabla_valores.json'
+        self.dicc = []
 
     def inicializar_tabla(self):
-        
-        with open(self.TABLA_LLAVES, 'r') as f:
-            lector = csv.DictReader(f, fieldnames=self.ESQUEMA_LLAVES)
-            
-            for row in lector:
-                self.dicc.append(row)
-            
+        if os.path.exists(self.TABLA_LLAVES):
+            with open(self.TABLA_LLAVES, 'r', encoding='utf-8') as f:
+                self.dicc = json.load(f)
 
     def guardar_llaves(self):
-
-        tmp_tabla_llaves = '{}.tmp'.format(self.TABLA_LLAVES)
-
-        with open(tmp_tabla_llaves, mode='w', encoding = 'utf-8') as f:
-            escritor = csv.DictWriter(f, fieldnames=self.ESQUEMA_LLAVES)
-            escritor.writerows(self.dicc)
-            os.remove(self.TABLA_LLAVES)
-        os.rename(tmp_tabla_llaves, self.TABLA_LLAVES)
-                    
+        with open(self.TABLA_LLAVES, 'w', encoding='utf-8') as f:
+            json.dump(self.dicc, f, ensure_ascii=False, indent=4)
 
     def leer_lista_llaves(self):
         return self.dicc
@@ -38,7 +27,6 @@ class tabla_valores():
 
         if aux == 0: 
             self.dicc.append(llave)
-               
 
     def leer_llave(self, llave):
         for i in self.dicc:

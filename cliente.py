@@ -1,4 +1,4 @@
-import socket, pickle, struct, sys
+import socket, pickle, struct
 
 class Cliente():
     
