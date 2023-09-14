@@ -1,8 +1,13 @@
-# Base de datos NoSQL basada en Key-Value
+# BackUp
 
-## Realizado por Alejandro Rodriguez Muñoz, Camila Mejia y Daniel Solano 
+## Realizado por Alejandro Rodriguez Muñoz
 
-### Materia Topicos de telematica de la universidad EAFIT 2022-1
+### Materia Sistemas operativos de la universidad EAFIT 2023-1
+
+
+### Arquitectura
+
+!https://github.com/AlejoRm01/NoSQL-KeyValue/blob/e0589cfa6dbcc5eeb54c7762da5390d806984e2e/Arquitectura.png
 
 ### Instalacción
 ***
@@ -13,50 +18,22 @@ $ cd ../path/to/the/file/NoSQL-KeyValue
 ### Ejecución
 ***
 #### Primero nodos
-Se necesita un puerto diferente por nodo, si se va a ejecutar un solo nodo por default estara en el
-puerto 5000, se puede ejecutar de la siguiente manera: 
+Se ejecutan los nodos de la siguiente manera: 
 ```
-$ py Nodo.py
+$ cd N0/python3 Nodo.py
+$ cd N1/python3 Nodo.py
+$ cd N1/python3 Nodo.py
 ```
-De lo contrario si se quiere mas de un nodo al tiempo se debe ejecutar en diferentes consolas añadiendo como argumento el puerto
-ejemplo:
+
+#### Segundo balanceardor
+Se ejecuta asi:
 ```
-$ py Nodo.py 5000
-$ py Nodo.py 5001
-$ py Nodo.py 5002
-$ py Nodo.py 5003
-```
-#### Segundo balanceardor de carga
-Si solo de dispone un nodo se ejecuta asi:
-```
-$ py Balanceador.py
-```
-Si hay mas de un nodo debes adiccionar los puertos de los nodos de esta manera:
-```
-$ py Balanceador.py 5000 5001 5002 5003
+$ python3 Balanceador.py -a 2020 2021 2022
 ```
 
 #### Tercero cliente
 El cliente puede crear, leer, actualizar y eliminar.
-
-#### Crear
 ```
-c.crear('01', 'Alejandro Rodriguez prueba') 
+$ python3  Cliente.py
 ```
-#### Leer 
-```
-c.leer('01')
-``` 
-#### Actualizar
-```
-#c.actualizar('01', 'Sistemas operativos')
-```
-#### Eliminar
-```
-#c.eliminar('01')
-```
-Solo es cambiar la llave por una de su elección, y el valor por uno de su elección.
-#### Ejecutar de la siguiente forma:
-```
-$ py Cliente.py 
-```
+Se ejecuta y salen varias opciones, en este momento esta funcional la opcion 1 y 2 solamente
