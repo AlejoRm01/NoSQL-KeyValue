@@ -18,6 +18,12 @@ class tabla_valores():
 
     def leer_lista_llaves(self):
         return self.dicc
+    
+    def buscar_por_llave(self, llave):
+        for elemento in self.dicc:
+            if llave in elemento:
+                return elemento[llave]
+        return None
 
     def crear_llave(self, llave):
         aux = 0
@@ -42,4 +48,10 @@ class tabla_valores():
         for i in self.dicc:
             if str(llave) == str(i['llave']): 
                 self.dicc.remove(i)
-    
+'''
+if __name__ == "__main__":
+    t = tabla_valores()
+    t.inicializar_tabla()
+    x = t.buscar_por_llave("Arquitectura.png")
+    print(x)
+'''

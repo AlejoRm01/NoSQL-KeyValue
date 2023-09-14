@@ -37,9 +37,8 @@ class Cliente():
 
         self.enviar(self.msg)
         msg = self.recibir_datos()
-        print(msg)
         msg = pickle.loads(msg)
-        print(msg)
+    
         ruta = 'Archivos/'+ llave
         #Verificar que exista la carpeta Archivos
         if not os.path.exists('Archivos'):

@@ -162,20 +162,15 @@ class Balanceador():
         if t.obtener_particiones(llave) is None:
             print(f'Llave "{llave}" no encontrada.')
             return
-        print(msg)
 
         partes_recibidas = self.leer_de_nodos(pickle.dumps(msg))
-        print("2")
-        print(partes_recibidas)
 
         partes = []
         for parte in partes_recibidas:
             partes.append(pickle.loads(parte))
-        print("3")
-        print(partes)
+        
         archivo = self.rearmar_archivo(partes)
-        print("4")
-        print(archivo)
+
         #Enviar archivo al cliente
         self.enviar(archivo, 4999)
     
