@@ -22,7 +22,7 @@ Se ejecutan los nodos de la siguiente manera:
 ```
 $ cd N0/python3 Nodo.py
 $ cd N1/python3 Nodo.py
-$ cd N1/python3 Nodo.py
+$ cd N2/python3 Nodo.py
 ```
 
 #### Segundo balanceardor
@@ -36,4 +36,4 @@ El cliente puede crear, leer, actualizar y eliminar.
 ```
 $ python3  Cliente.py
 ```
-Se ejecuta y salen varias opciones, en este momento esta funcional la opcion 1 y 2 solamente
+Se ejecuta y salen varias opciones, en este momento esta funcional la opción 1 y 2 solamente
