@@ -9,7 +9,7 @@
 
 ![Arquitectura del sistema](https://github.com/AlejoRm01/NoSQL-KeyValue/blob/8875a5b315c54383679fc322c6a3e9d95d618338/Arquitectura.png)
 
-### Instalacción
+### Instalación
 ***
 ```
 $ git clone https://github.com/AlejoRm01/NoSQL-KeyValue
@@ -20,9 +20,13 @@ $ cd ../path/to/the/file/NoSQL-KeyValue
 #### Primero nodos
 Se ejecutan los nodos de la siguiente manera: 
 ```
-$ cd N0/python3 Nodo.py
-$ cd N1/python3 Nodo.py
-$ cd N2/python3 Nodo.py
+$ cd N0
+$ python3 Nodo.py
+$ cd ../N1
+$ python3 Nodo.py
+$ cd ../N2
+$ python3 Nodo.py
+
 ```
 
 #### Segundo balanceardor
