@@ -1,6 +1,6 @@
 import multiprocessing
 import socket, struct, pickle
-from tabla_valores import *
+from TablaValores import tabla_valores
 import argparse
 
 class nodo():
@@ -10,7 +10,7 @@ class nodo():
         self.port = port
         self.connected = True
         self.msg = {}
-        self.port_balanceador_de_carga = 5050
+        self.port_balanceador = 5050
 
     def iniciar_conexion(self):
         # Iniciar servicio 
@@ -72,11 +72,13 @@ class nodo():
             self.eliminar(msg)
             
     def crear(self, msg):
-        print('Creando')
         aux = {
             'llave':msg['llave'],
-            'valor':msg['valor']
+            'parte_numero':msg['parte_numero'],
+            'valor':msg['parte_contenido']
         }
+
+        print(aux)
         
         t = tabla_valores()
         t.inicializar_tabla()
@@ -118,9 +120,6 @@ class nodo():
         
     
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('port', default=5000, type=int)
-    args = parser.parse_args()
-    s = nodo( hostname = 'localhost', port = args.port)
+    s = nodo( hostname = 'localhost', port = 2022)
     s.iniciar_conexion()
     s.aceptar_conexion()

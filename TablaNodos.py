@@ -1,11 +1,11 @@
 import os
 import json
 
-class tabla_nodos():
+class tablaNodos():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'tabla_nodos.json'
-        self.dicc = []
+        self.TABLA_LLAVES = 'TablaNodos.json'
+        self.dicc = {}
 
     def inicializar_tabla(self):
         if os.path.exists(self.TABLA_LLAVES):
@@ -16,24 +16,12 @@ class tabla_nodos():
         with open(self.TABLA_LLAVES, 'w') as f:
             json.dump(self.dicc, f, indent=4)
 
-    def leer_lista_llaves(self):
-        return self.dicc
+    def crear_llave(self, llave, particiones):
+        self.dicc[llave] = particiones
 
-    def crear_llave(self, llave):
-        aux = 0
-        for i in self.dicc:
-            if str(llave['llave']) == str(i['llave']):
-                aux = 1
-
-        if aux == 0:
-            self.dicc.append(llave)
-
-    def leer_llave(self, llave):
-        for i in self.dicc:
-            if str(llave) == str(i['llave']):
-                return i['nodo']
+    def obtener_particiones(self, llave):
+        return self.dicc.get(llave, [])
 
     def eliminar(self, llave):
-        for i in self.dicc:
-            if str(llave) == str(i['llave']):
-                self.dicc.remove(i)
+        if llave in self.dicc:
+            del self.dicc[llave]

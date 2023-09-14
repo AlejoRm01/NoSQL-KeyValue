@@ -4,7 +4,7 @@ import json
 class tabla_valores():
     
     def __init__(self):
-        self.TABLA_LLAVES = 'tabla_valores.json'
+        self.TABLA_LLAVES = 'TablaValores.json'
         self.dicc = []
 
     def inicializar_tabla(self):

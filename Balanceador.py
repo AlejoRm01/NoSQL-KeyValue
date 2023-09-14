@@ -2,16 +2,16 @@ import multiprocessing
 import random
 import socket, pickle
 import struct
-from TablaNodos import *
+from TablaNodos import tablaNodos
 import argparse
 
 class Balanceador():
 
-    def __init__(self, hostname, port, puertos):
+    def __init__(self, hostname, puertos):
         self.puertos = puertos
         self.nNodos = int(len(self.puertos))
         self.hostname = hostname
-        self.port = port
+        self.port = 5050
         self.msg = {}
         self.connected = True
         
@@ -44,8 +44,8 @@ class Balanceador():
                 # Recibir datos del cliente.
                 lengthbuf = self.recvall(self.connection, 4)
                 length, = struct.unpack('!I', lengthbuf)
-                msg = self.recvall(self.connection, length)              
-                # self.conn.sendall(b'Se han recibido los datos')    
+                msg = self.recvall(self.connection, length)   
+
                 self.organizar_datos(msg)
 
             except Exception as e:
@@ -76,29 +76,9 @@ class Balanceador():
         elif(msg['operacion'] == '4'):
             self.eliminar(msg)                    
 
-    def crear(self, msg):
-        #Iniciar proceso de crear registro en la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
-        nodo = 0
-        if self.nNodos-1 == 0:
-            nodo = 0
-        else:
-            nodo = random.randrange(0, self.nNodos)
-       
-        aux = {
-            'llave':msg['llave'],
-            'nodo':nodo
-        }
-        
-        t = tabla_nodos()
-        t.inicializar_tabla()
-        t.crear_llave(aux)
-        t.guardar_llaves()
-        
-        self.enviar(msg, self.puertos[nodo])
-
     def leer(self, msg):
         #Iniciar proceso de leer un registro de la tabla de llaves y nodos, ademas de iniciar el proceso con el nodo
-        t = tabla_nodos()
+        t = tablaNodos()
         t.inicializar_tabla()
         nodo = t.leer_llave(msg['llave'])
         self.enviar(msg, self.puertos[int(nodo)])
@@ -106,7 +86,7 @@ class Balanceador():
     def actualizar(self, msg):
         #Iniciar proceso de actualizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para actualizar la llave y el valor en el servidor
-        t = tabla_nodos()
+        t = tablaNodos()
         t.inicializar_tabla()
         nodo = t.leer_llave(msg['llave'])
         self.enviar(msg, self.puertos[int(nodo)])
@@ -114,7 +94,7 @@ class Balanceador():
     def eliminar(self, msg):
         #Iniciar proceso de eliminar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
         #para eliminar la llave y el valor en el servidor
-        t = tabla_nodos()
+        t = tablaNodos()
         t.inicializar_tabla()
         nodo = t.leer_llave(msg['llave'])
         t.eliminar(msg['llave'])
@@ -134,12 +114,73 @@ class Balanceador():
         connection.sendall(msg)
         connection.close()
 
+    def rearmar_archivo(self, llave):
+        t = tablaNodos()
+        particiones = t.obtener_partes(llave)
+        archivo_rearmado = b""
+        
+        for parte_numero, nodo in particiones:
+            parte_contenido = self.obtener_parte_archivo(llave, parte_numero, nodo)
+            archivo_rearmado += parte_contenido
+        
+        return archivo_rearmado
+
+    def crear(self, msg):
+        # Iniciar proceso de crear registro en la tabla de llaves y servidores,
+        # además de iniciar el proceso con el servidor
+        nodo = 0
+        if self.nNodos - 1 == 0:
+            nodo = 0
+        else:
+            nodo = random.randrange(0, self.nNodos)
+
+        # Particionar el archivo y guardar las particiones en la tabla de nodos
+        archivo = msg['valor']
+        llave = msg['llave']
+        particiones = self.particionar_archivo(llave, archivo, nodo)
+        
+        aux = [(tupla[0], tupla[1]) for tupla in particiones]
+
+        # Guardar las particiones en la tabla de nodos
+        t = tablaNodos()
+        t.inicializar_tabla()
+        t.crear_llave(llave, aux)
+        t.guardar_llaves()
+
+        aux = [(tupla[-1]) for tupla in particiones]
+
+        # Enviar mensaje a los nodos correspondientes
+        self.enviar_particiones(msg, aux)
+
+    def particionar_archivo(self, llave, archivo, nodo):
+        # Particionar el archivo y guardar las particiones en la tabla de nodos
+        tamano_particion = len(archivo) // self.nNodos
+        particiones = []
+
+        for i in range(self.nNodos):
+            inicio = i * tamano_particion
+            fin = (i + 1) * tamano_particion if i < self.nNodos - 1 else len(archivo)
+            parte = archivo[inicio:fin]
+            particiones.append((i, nodo, parte))  # Parte y nodo correspondiente
+
+        return particiones
+
+    def enviar_particiones(self, msg, particiones):
+        # Enviar las particiones a los nodos correspondientes
+        for i in range(len(particiones)):
+            nuevo_msg = {
+                'operacion': msg['operacion'],
+                'llave': msg['llave'],
+                'parte_numero': i,
+                'parte_contenido': particiones[i]  # Enviar el contenido de la parte del archivo
+            }
+            self.enviar(nuevo_msg, self.puertos[i])
+
 if __name__ == "__main__":
-    # Probar conexion entre cliente y socket  
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', nargs="+", default=5000, type=int)
+    parser.add_argument('-a', nargs="+", default=[2020], type=int)
     args = parser.parse_args()
 
-    s = Balanceador( hostname = 'localhost', port = 5050, puertos = args.a)
+    s = Balanceador(hostname='localhost', puertos=args.a)
     s.iniciar_conexion()
     s.aceptar_conexion()
