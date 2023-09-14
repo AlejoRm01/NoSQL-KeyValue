@@ -7,7 +7,7 @@
 
 ### Arquitectura
 
-!(https://github.com/AlejoRm01/NoSQL-KeyValue/blob/e0589cfa6dbcc5eeb54c7762da5390d806984e2e/Arquitectura.png)
+![Arquitectura del sistema](https://github.com/AlejoRm01/NoSQL-KeyValue/blob/e0589cfa6dbcc5eeb54c7762da5390d806984e2e/Arquitectura.png)
 
 ### Instalacción
 ***
