@@ -41,7 +41,8 @@ class nodo():
                 # Recibir datos del cliente.
                 lengthbuf = self.recvall(self.connection, 4)
                 length, = struct.unpack('!I', lengthbuf)
-                msg = self.recvall(self.connection, length)    
+                msg = self.recvall(self.connection, length)              
+                # self.conn.sendall(b'Se han recibido los datos')    
                 self.organizar_datos(msg)
 
             except Exception as e:
@@ -61,8 +62,6 @@ class nodo():
         #Se organiza la informacion
         msg = pickle.loads(msg)
 
-        print(msg)
-
         if(msg['operacion'] == '1'):
             self.crear(msg)
         elif(msg['operacion'] == '2'):
@@ -73,12 +72,13 @@ class nodo():
             self.eliminar(msg)
             
     def crear(self, msg):
-
         aux = {
             'llave':msg['llave'],
             'parte_numero':msg['parte_numero'],
             'valor':msg['parte_contenido']
         }
+
+        print(aux)
         
         t = tabla_valores()
         t.inicializar_tabla()
@@ -120,6 +120,6 @@ class nodo():
         
     
 if __name__ == "__main__":
-    s = nodo( hostname = 'localhost', port = 2020)
+    s = nodo( hostname = 'localhost', port = 2021)
     s.iniciar_conexion()
     s.aceptar_conexion()

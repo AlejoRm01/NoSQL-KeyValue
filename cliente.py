@@ -14,27 +14,17 @@ class Cliente():
             self.sock.connect((self.hostname, self.port))
         except Exception as e:
             print(e)
-    
-    def leer_archivo(self, path):
-        # Abrir archivo, leerlo y retornarlo
-        file = open(path, 'rb')
-        archivo = file.read()
-        file.close()
-
-        return archivo
-    
-    
-    def crear(self, path):
+     
+    def crear(self, ruta):
         # Crear un registro nuevo en la base de datos usando el nombre del archivo como llave
-        if os.path.exists(path):
-            filename = os.path.basename(path)
+        if os.path.exists(ruta):
+            nombre_archivo = os.path.basename(ruta)
             with open(path, 'rb') as file:
-                image_data = file.read()
-            encoded_image = base64.b64encode(image_data).decode('utf-8')
-
+                archivo = file.read()
+                    
             self.msg['operacion'] = '1'
-            self.msg['llave'] = filename  # Usar el nombre del archivo como llave
-            self.msg['valor'] = encoded_image
+            self.msg['llave'] = nombre_archivo  # Usar el nombre del archivo como llave
+            self.msg['valor'] = archivo
 
             self.enviar(self.msg)
         else:
@@ -47,8 +37,18 @@ class Cliente():
 
         self.enviar(self.msg)
         msg = self.recibir_datos()
+        print(msg)
         msg = pickle.loads(msg)
         print(msg)
+        ruta = 'Archivos/'+ llave
+        #Verificar que exista la carpeta Archivos
+        if not os.path.exists('Archivos'):
+            os.makedirs('Archivos')
+
+        # Crear el archivo y escribir los datos recibidos
+        with open(ruta, 'wb') as archivo:
+            archivo.write(msg)
+
         
     def actualizar(self, llave, valor):
         #Actualizar registro de la base dec datos
@@ -81,7 +81,7 @@ class Cliente():
         conn, addr = sock.accept()
         print('Leyendo datos de: ', addr)
         while True:
-            # Recibir datos del nodo.
+            # Recibir datos del balanceador.
             lengthbuf = self.recvall(conn, 4)
             length, = struct.unpack('!I', lengthbuf)
             msg = self.recvall(conn, length)                 

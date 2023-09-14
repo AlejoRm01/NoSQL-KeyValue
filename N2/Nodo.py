@@ -120,6 +120,6 @@ class nodo():
         
     
 if __name__ == "__main__":
-    s = nodo( hostname = 'localhost', port = 2021)
+    s = nodo( hostname = 'localhost', port = 2022)
     s.iniciar_conexion()
     s.aceptar_conexion()

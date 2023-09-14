@@ -75,13 +75,6 @@ class Balanceador():
             self.actualizar(msg)
         elif(msg['operacion'] == '4'):
             self.eliminar(msg)                    
-
-    def leer(self, msg):
-        #Iniciar proceso de leer un registro de la tabla de llaves y nodos, ademas de iniciar el proceso con el nodo
-        t = tablaNodos()
-        t.inicializar_tabla()
-        nodo = t.leer_llave(msg['llave'])
-        self.enviar(msg, self.puertos[int(nodo)])
         
     def actualizar(self, msg):
         #Iniciar proceso de actualizar un registro de la tabla de llaves y servidores, ademas de iniciar el proceso con el servidor
@@ -100,46 +93,19 @@ class Balanceador():
         t.eliminar(msg['llave'])
         t.guardar_llaves()
         self.enviar(msg, self.puertos[int(nodo)])
-    
-    def enviar(self, msg, port):
-        #Enviar datos al nodo  
-        print('Enviando datos')
-        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        connection.connect(('localhost', port))
-
-        msg = pickle.dumps(msg)
-        length = len(msg)
-        
-        connection.sendall(struct.pack('!I', length))
-        connection.sendall(msg)
-        connection.close()
-
-    def rearmar_archivo(self, llave):
-        t = tablaNodos()
-        particiones = t.obtener_partes(llave)
-        archivo_rearmado = b""
-        
-        for parte_numero, nodo in particiones:
-            parte_contenido = self.obtener_parte_archivo(llave, parte_numero, nodo)
-            archivo_rearmado += parte_contenido
-        
-        return archivo_rearmado
 
     def crear(self, msg):
-        # Iniciar proceso de crear registro en la tabla de llaves y servidores,
-        # además de iniciar el proceso con el servidor
-        nodo = 0
-        if self.nNodos - 1 == 0:
-            nodo = 0
-        else:
-            nodo = random.randrange(0, self.nNodos)
-
         # Particionar el archivo y guardar las particiones en la tabla de nodos
         archivo = msg['valor']
         llave = msg['llave']
-        particiones = self.particionar_archivo(llave, archivo, nodo)
+        particiones = self.particionar_archivo(archivo)
         
         aux = [(tupla[0], tupla[1]) for tupla in particiones]
+
+        aux = {
+        "parte_numero": [tupla[0] for tupla in particiones],
+        "nodo_seleccionado": [tupla[1] for tupla in particiones]
+        }   
 
         # Guardar las particiones en la tabla de nodos
         t = tablaNodos()
@@ -152,16 +118,26 @@ class Balanceador():
         # Enviar mensaje a los nodos correspondientes
         self.enviar_particiones(msg, aux)
 
-    def particionar_archivo(self, llave, archivo, nodo):
+    def particionar_archivo(self, archivo):
         # Particionar el archivo y guardar las particiones en la tabla de nodos
         tamano_particion = len(archivo) // self.nNodos
+        nodos_disponibles = list(range(self.nNodos))  # Lista de nodos disponibles
+
         particiones = []
 
         for i in range(self.nNodos):
+            if not nodos_disponibles:
+                # Si no quedan nodos disponibles, restablece la lista
+                nodos_disponibles = list(range(self.nNodos))
+
+            # Selecciona un nodo aleatorio de los disponibles
+            nodo_seleccionado = random.choice(nodos_disponibles)
+            nodos_disponibles.remove(nodo_seleccionado)  # Elimina el nodo seleccionado de la lista
+
             inicio = i * tamano_particion
             fin = (i + 1) * tamano_particion if i < self.nNodos - 1 else len(archivo)
             parte = archivo[inicio:fin]
-            particiones.append((i, nodo, parte))  # Parte y nodo correspondiente
+            particiones.append((i, nodo_seleccionado, parte))  # Parte, nodo correspondiente y nodo real
 
         return particiones
 
@@ -175,6 +151,95 @@ class Balanceador():
                 'parte_contenido': particiones[i]  # Enviar el contenido de la parte del archivo
             }
             self.enviar(nuevo_msg, self.puertos[i])
+
+    def leer(self, msg):
+        # Inicializar tabla de nodos
+        t = tablaNodos()
+        t.inicializar_tabla()
+        llave = msg['llave']
+        
+        # Verificar si la llave existe en la tabla de nodos
+        if t.obtener_particiones(llave) is None:
+            print(f'Llave "{llave}" no encontrada.')
+            return
+        print(msg)
+
+        partes_recibidas = self.leer_de_nodos(pickle.dumps(msg))
+        print("2")
+        print(partes_recibidas)
+
+        partes = []
+        for parte in partes_recibidas:
+            partes.append(pickle.loads(parte))
+        print("3")
+        print(partes)
+        archivo = self.rearmar_archivo(partes)
+        print("4")
+        print(archivo)
+        #Enviar archivo al cliente
+        self.enviar(archivo, 4999)
+    
+    def leer_de_nodos(self, msg):
+        partes_recibidas = []
+
+        for i in range(self.nNodos):
+            connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            connection.connect(('localhost', self.puertos[i]))
+
+            try:
+                length = len(msg)
+
+                # Enviar la solicitud al nodo
+                connection.sendall(struct.pack('!I', length))
+                connection.sendall(msg)
+
+                # Recibir la parte del archivo del nodo
+                lengthbuf = self.recvall(connection, 4)
+                length, = struct.unpack('!I', lengthbuf)
+                parte_contenido = self.recvall(connection, length)
+                
+                partes_recibidas.append(parte_contenido)
+
+            except Exception as e:
+                print(f"Error al comunicarse con el nodo {i}: {e}")
+            finally:
+                connection.close()
+        return partes_recibidas
+        
+
+    def rearmar_archivo(self, partes):
+        # Ordena la lista de partes por el número de parte
+        partes_ordenadas = sorted(partes, key=lambda x: x['parte_numero'])
+
+        # Inicializa una lista para almacenar las partes convertidas en bytes
+        partes_bytes = []
+
+        # Convierte cada parte en bytes y agrégala a la lista
+        for parte in partes_ordenadas:
+            if isinstance(parte['valor'], str):
+                parte_bytes = parte['valor'].encode('utf-8')
+            else:
+                parte_bytes = parte['valor']
+            partes_bytes.append(parte_bytes)
+
+        # Concatena las partes en bytes para rearmar el archivo
+        archivo_rearmado = b''.join(partes_bytes)
+
+        return archivo_rearmado
+
+    def enviar(self, msg, port):
+        #Enviar datos al nodo  
+        print('Enviando datos')
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect(('localhost', port))
+        
+        msg = pickle.dumps(msg)
+        length = len(msg)
+        
+        connection.sendall(struct.pack('!I', length))
+        connection.sendall(msg)
+        connection.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

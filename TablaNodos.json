@@ -1,16 +1,10 @@
 {
-    "Arquitectura.png": [
-        [
-            0,
+    "Arquitectura.png": {
+        "parte_numero": [
             0
         ],
-        [
-            1,
-            0
-        ],
-        [
-            2,
+        "nodo_seleccionado": [
             0
         ]
-    ]
+    }
 }
