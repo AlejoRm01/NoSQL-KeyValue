@@ -12,6 +12,7 @@ class Balanceador():
         self.nNodos = int(len(self.puertos))
         self.hostname = hostname
         self.port = 5050
+        self.puertoCliente = 4999
         self.msg = {}
         self.connected = True
         
@@ -33,7 +34,7 @@ class Balanceador():
             #Se recibe el dato con la operacion del cliente, aparte en enviarlo al metodo de 
             #organizar datos para procesar y deseempaquetar la informacion
             proceso = multiprocessing.Process(target= self.recibir_datos, args=())
-            # proceso.daemon = True
+            proceso.daemon = True
             proceso.start()
             print('Nuevo proceso inciado %r', proceso)
 
@@ -172,7 +173,7 @@ class Balanceador():
         archivo = self.rearmar_archivo(partes)
 
         #Enviar archivo al cliente
-        self.enviar(archivo, 4999)
+        self.enviar(archivo, self.puertoCliente)
     
     def leer_de_nodos(self, msg):
         partes_recibidas = []
